@@ -3,6 +3,7 @@
 import streamlit as st
 import os
 import json
+import base64
 from literature_review import perform_literature_review
 import generate_report
 import novel_ideas
@@ -33,14 +34,43 @@ def main():
     if "results_generated" not in st.session_state:
         st.session_state["results_generated"] = False
 
-    # Top: Display Logo
-    if os.path.exists("itus/database/logo.jpg"):
-        st.image("itus/dataset/logo.jpg", width=200)
-    else:
-        st.markdown(
-            "<h2 style='text-align: center;'>[Your Logo Here]</h2>", unsafe_allow_html=True)
+    # Top: Display Logo using SVG
+    logo_svg = '''
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80">
+      <!-- Background shape -->
+      <rect x="10" y="10" width="220" height="60" rx="12" fill="#1e1e1e" />
+      
+      <!-- Accent border -->
+      <rect x="10" y="10" width="220" height="60" rx="12" fill="none" stroke="#4CAF50" stroke-width="2" />
+      
+      <!-- Main text "REPER" -->
+      <text x="120" y="48" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#ffffff" text-anchor="middle">REPER</text>
+      
+      <!-- Document icon to the left -->
+      <path d="M40,30 L40,50 L55,50 L55,40 L45,40 L45,30 Z" fill="#4CAF50" />
+      <path d="M45,30 L45,40 L55,40 Z" fill="#4CAF50" />
+      
+      <!-- Search magnifying glass to the right -->
+      <circle cx="180" cy="38" r="8" fill="none" stroke="#4CAF50" stroke-width="2.5" />
+      <line x1="185" y1="45" x2="192" y2="52" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round" />
+      
+      <!-- Tagline -->
+      <text x="120" y="62" font-family="Arial, sans-serif" font-size="10" fill="#9c9c9c" text-anchor="middle">Literature Review Made Simple</text>
+    </svg>
+    '''
+    
+    # Function to encode the SVG to a data URL for inline display
+    def svg_to_data_url(svg):
+        b64 = base64.b64encode(svg.encode('utf-8')).decode('utf-8')
+        return f'data:image/svg+xml;base64,{b64}'
+    
+    # Display logo centered
+    st.markdown(
+        f'<div style="display: flex; justify-content: center;"><img src="{svg_to_data_url(logo_svg)}" width="240px"></div>',
+        unsafe_allow_html=True
+    )
 
-    st.markdown("<h1 style='text-align: center;'>Research Literature Review Workflow</h1>",
+    st.markdown("<h1 style='text-align: center;'></h1>",
                 unsafe_allow_html=True)
     st.markdown("---")
 
@@ -49,7 +79,7 @@ def main():
     col1, col2, col3 = st.columns(3)
     with col1:
         research_topic = st.text_input(
-            "Research Topic", "LLM for high quality code generation")
+            "Research Topic", "Drop your Research Idea Here")
     with col2:
         open_ai_key = st.text_input(
             "OpenAI API Key (Optional)", type="password")
