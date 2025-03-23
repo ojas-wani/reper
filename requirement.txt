@@ -2,4 +2,5 @@ openai
 arxiv
 python-dotenv
 tiktoken
-semanticscholar
+re
+scholarly 

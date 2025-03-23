@@ -1,5 +1,5 @@
 from tools import ArxivSearch
-from agents import PhDStudentAgent
+from agents import SubTopicAgent, PostdocAgent
 import os
 import re
 
@@ -9,6 +9,7 @@ def extract_prompt(text, word):
     code_blocks = re.findall(code_block_pattern, text, re.DOTALL)
     return "\n".join(code_blocks).strip()
 
+
 def extract_sub_topics(text):
     # Extracts numbered list items (1., 2., etc.)
     pattern = r'\d+\.\s+(.*)'
@@ -16,64 +17,59 @@ def extract_sub_topics(text):
     return matches
 
 
-def perform_literature_review(research_topic, num_papers):
-    arxiv_engine = ArxivSearch()
-    phd_agent = PhDStudentAgent(model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B", notes=[],
-                                openai_api_key=os.getenv("OPENAI_API_KEY"))
-
-    papers_collected = []
-    attempt = 0
-
-    print(f"Starting literature review for: {research_topic}")
-
+def get_sub_topics(sub_topic_agent, research_topic):
     # Initial step to get sub-topics
-    initial_response = phd_agent.inference(
+    initial_response = sub_topic_agent.inference(
         research_topic=research_topic,
         temp=0.8
     )
     print("Initial Agent Response:", initial_response, "\n~~~~~~~~~~~")
 
-    # Extract sub-topics and search
+    # Extract sub-topics
     sub_topics = extract_sub_topics(initial_response)
 
     print("Potential Sub-topics:\n")
-
     for i, sub_topic in enumerate(sub_topics, 1):
         print(f"{i}. {sub_topic.strip()}")
 
+    return sub_topics
+
+
+def get_papers_by_sub_topic(sub_topic_agent, sub_topics):
+    arxiv_engine = ArxivSearch()
+    papers_collected = []
+
     for sub_topic in sub_topics:
-        papers = arxiv_engine.find_papers_by_str(
-            sub_topic.strip(), N=3)
+        papers = arxiv_engine.find_papers_by_str(sub_topic.strip(), N=3)
         if papers:
             papers_collected.extend(papers.split("\n\n"))
             print(
                 f"Found {len(papers.split('\n\n'))} papers for sub-topic: {sub_topic}")
 
-    # Continue with interactive steps
-    # attempt += 1  # Move to attempt 1 after initial step
+    return papers_collected
 
-    num_papers = len(sub_topics) * 3  # Adjust number of papers to collect based on sub-topics
 
-    while len(papers_collected) < num_papers and attempt < 1:  # Limit attempts to avoid infinite loop
-        response = phd_agent.inference(
-            research_topic=research_topic,
-            temp=0.8
-        )
+def perform_literature_review(research_topic, num_papers):
+    sub_topic_agent = SubTopicAgent(model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B", notes=[],
+                                    openai_api_key=os.getenv("OPENAI_API_KEY"))
+    postdoc_agent = PostdocAgent(model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B", notes=[],
+                                 openai_api_key=os.getenv("OPENAI_API_KEY"))
 
-        if "```SUMMARY" in response:
-            query = extract_prompt(response, "SUMMARY").strip()
-            query = query.replace('"', '').replace("'", "")
-            print(f"Searching arXiv for: {query}")
-            papers = arxiv_engine.find_papers_by_str(
-                query, N=2)  # Reduced to avoid duplicates
-            if papers:
-                papers_collected.extend(papers.split("\n\n"))
-                print(f"Found {len(papers.split('\n\n'))} relevant papers")
+    print(f"Starting literature review for: {research_topic}")
 
-        attempt += 1
+    # Get sub-topics
+    sub_topics = get_sub_topics(sub_topic_agent, research_topic)
+
+    # Get papers by sub-topics
+    papers_collected = get_papers_by_sub_topic(sub_topic_agent, sub_topics)
+
+    # Use PostdocAgent to select top 10 papers closely aligned with the main topic
+    selected_papers = postdoc_agent.process_papers(
+        papers_collected, research_topic)
+
     # Display results
-    print("\nLiterature Review Completed. Collected Papers:")
-    for i, paper in enumerate(papers_collected[:num_papers], 1):
+    print("\nLiterature Review Completed. Selected Papers:")
+    for i, paper in enumerate(selected_papers, 1):
         print(f"\nPaper #{i}:")
         print(paper)
 
@@ -81,6 +77,7 @@ def perform_literature_review(research_topic, num_papers):
 if __name__ == "__main__":
     research_topic = "machine learning in Health care"
     perform_literature_review(research_topic, num_papers=5)
+
 
 """
 def literature_review(self):
