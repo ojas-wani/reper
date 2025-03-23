@@ -7,8 +7,9 @@ load_dotenv()
 
 def query_model(model_str, system_prompt, prompt, temp, openai_api_key=None):
     client = OpenAI(
-        api_key=openai_api_key,
-        base_url="https://api.siliconflow.cn/v1"
+        api_key=openai_api_key or os.getenv("OPENAI_API_KEY"),
+        # base_url="https://api.siliconflow.cn/v1"
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 
     messages = [

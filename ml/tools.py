@@ -1,30 +1,47 @@
 import arxiv
-import time
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 
 class ArxivSearch:
     def __init__(self):
         self.client = arxiv.Client()
+        # Using a basic model here for demo; in practice, you could use a more powerful model.
+        self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
     def find_papers_by_str(self, query, N=5):
-        search = arxiv.Search(
-            query=f"abs:{query}",
-            max_results=N,
-            sort_by=arxiv.SortCriterion.Relevance
+        try:
+            search = arxiv.Search(
+                query=f"abs:{query}",
+                max_results=N,
+                sort_by=arxiv.SortCriterion.Relevance
+            )
+            results = list(self.client.results(search))
+            return "\n\n".join([self._format_result(r) for r in results])
+        except Exception as e:
+            print(f"arXiv search failed: {e}")
+            return ""
+
+    def _format_result(self, result):
+        return (
+            f"Title: {result.title}\n"
+            f"ID: {result.get_short_id()}\n"
+            f"Published: {result.published.date()}\n"
+            f"Summary: {result.summary}\n"
+            f"Link: {result.entry_id}"
         )
 
-        paper_sums = []
-        for result in self.client.results(search):
-            paperid = result.pdf_url.split("/")[-1]
-            pubdate = str(result.published).split(" ")[0]
-            summary = (
-                f"Title: {result.title}\n"
-                f"Summary: {result.summary}\n"
-                f"Publication Date: {pubdate}\n"
-                f"Categories: {' '.join(result.categories)}\n"
-                f"arXiv ID: {paperid}\n"
-            )
-            paper_sums.append(summary)
-            time.sleep(1)
+    def rank_papers(self, papers, research_topic, top_n=10):
+        if not papers:
+            return []
 
-        return "\n\n".join(paper_sums)
+        try:
+            topic_embed = self.embedder.encode(research_topic)
+            summaries = [p.split("Summary: ")[1].split("\n")[0]
+                         for p in papers if "Summary: " in p]
+            paper_embeds = self.embedder.encode(summaries)
+            scores = np.dot(paper_embeds, topic_embed)
+            return [papers[i] for i in np.argsort(scores)[-top_n:]]
+        except Exception as e:
+            print(f"Ranking failed: {e}")
+            return papers[:top_n]

@@ -2,5 +2,8 @@ openai
 arxiv
 python-dotenv
 tiktoken
-re
-scholarly 
+regex
+scholarly
+numpy
+sentence_transformers
+rich 
