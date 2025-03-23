@@ -1,10 +1,13 @@
+# agents.py
+
 from inference import query_model
 
 
 class BaseAgent:
-    def __init__(self, model=None, openai_api_key=None):
+    def __init__(self, model=None, openai_api_key=None, base_url=None):
         self.model = model
         self.openai_api_key = openai_api_key
+        self.base_url = base_url
 
     def inference(self, prompt, temp=0.7):
         return query_model(
@@ -12,6 +15,7 @@ class BaseAgent:
             prompt=prompt,
             temp=temp,
             openai_api_key=self.openai_api_key,
+            base_url=self.base_url,
             system_prompt=self.system_prompt()
         )
 
@@ -33,22 +37,18 @@ class PostdocAgent(BaseAgent):
             "You are a senior researcher with extensive experience in conducting "
             "systematic literature reviews. You excel at writing a SINGLE, cohesive "
             "academic report without dividing the text by sub-topic headings.\n\n"
-
             "You must:\n"
             "1. Provide a holistic, unified analysis of the provided sub-topics and papers.\n"
             "2. Critically assess methodologies, major findings, limitations, and relationships.\n"
             "3. Discuss potential research directions and future prospects.\n"
             "4. Maintain a formal academic writing style.\n\n"
-
             "Key instructions:\n"
             "- DO NOT produce multiple separate sections named after each sub-topic.\n"
             "- Instead, weave the sub-topics organically into a single integrated narrative.\n"
             "- Provide well-structured paragraphs that present a cohesive discussion.\n"
-            "- When referring to sub-topics, label them in-line (e.g., '[Theme X]: ...'), "
-            "  but do not isolate them into standalone headings.\n"
+            "- When referring to sub-topics, label them in-line (e.g., '[Theme X]: ...'), but do not isolate them into standalone headings.\n"
             "- Summaries must focus on the overarching research question, bridging the sub-topics.\n"
-            "- Identify future directions or gaps that emerge from the synergy of these studies.\n"
-
+            "- Identify future directions or gaps that emerge from the synergy of these studies.\n\n"
             "Remember:\n"
             "- The user provides the sub-topics and relevant papers.\n"
             "- Your primary task is to consolidate them into ONE unified analysis.\n"
@@ -57,11 +57,6 @@ class PostdocAgent(BaseAgent):
 
 
 class NovelApproachAgent(BaseAgent):
-    """
-    This agent proposes a novel or innovative research approach based on 
-    the existing literature review outcomes and user context.
-    """
-
     def system_prompt(self):
         return (
             "You are an 'innovation consultant' for academic research. You specialize in:\n"

@@ -1,3 +1,5 @@
+# inference.py
+
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -5,11 +7,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def query_model(model_str, system_prompt, prompt, temp, openai_api_key=None):
+def query_model(model_str, system_prompt, prompt, temp, openai_api_key=None, base_url=None):
     client = OpenAI(
         api_key=openai_api_key or os.getenv("OPENAI_API_KEY"),
-        # base_url="https://api.siliconflow.cn/v1"
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        base_url=base_url if base_url else "https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 
     messages = [

@@ -44,7 +44,7 @@ def extract_paper_metadata(paper):
         return None
 
 
-def perform_literature_review(research_topic, start_year, end_year, max_count=50):
+def perform_literature_review(research_topic, start_year, end_year, max_count=50, open_ai_key=None, base_url=None):
     """
     Perform a literature review:
       1. Generate sub-topics (via SubTopicAgent).
@@ -71,7 +71,8 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
         print("Generating sub-topics...")
         sub_agent = SubTopicAgent(
             model="gemini-2.0-flash",
-            openai_api_key=os.getenv("OPENAI_API_KEY")
+            openai_api_key=open_ai_key,
+            base_url=base_url
         )
         sub_topic_response = sub_agent.inference(research_topic)
         sub_topics = extract_sub_topics(sub_topic_response)
@@ -104,8 +105,6 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
         report["sub_topics"][st] = []
 
         try:
-            # Query a larger number of results to ensure we can filter out-of-range dates
-            # and still have enough to gather papers_per_subtopic.
             raw_papers = arxiv_engine.find_papers_by_str(
                 query=st,
                 start_year=start_year,
@@ -114,7 +113,6 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
             )
             papers = raw_papers.split("\n\n")
             print(f"  Found {len(papers)} papers (post date-filter).")
-
         except Exception as e:
             print(f"  Paper search failed for sub-topic '{st}': {e}")
             continue
@@ -131,7 +129,7 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
                 collected += 1
                 print(f"    Added paper {collected}: {paper_data['title']}")
             else:
-                print(f"    Did not find any paper in between the asked dates")
+                print("    Did not find any paper in between the dates")
 
     # 4) Save final JSON
     try:
@@ -147,9 +145,8 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
 
 if __name__ == "__main__":
     # Example usage:
-    # If we have 10 sub-topics, and max_count=50, then each sub-topic gets 5 papers (assuming 10 sub-topics discovered).
-    research_idea = "AI for patient safety in healthcare"
+    research_idea = "LLM for high quality code generation"
     start_year = 2020
     end_year = 2025
-    max_count = 50
+    max_count = 20
     perform_literature_review(research_idea, start_year, end_year, max_count)
