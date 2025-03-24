@@ -1,0 +1,9 @@
+openai
+arxiv
+python-dotenv
+tiktoken
+regex
+scholarly
+numpy
+sentence_transformers
+rich 
