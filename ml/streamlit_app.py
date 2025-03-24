@@ -11,6 +11,7 @@ import torch
 
 torch.classes.__path__ = []
 
+
 def load_result_files(db_folder="database"):
     result_files = {}
     if os.path.exists(db_folder):
@@ -58,12 +59,12 @@ def main():
       <text x="120" y="62" font-family="Arial, sans-serif" font-size="10" fill="#9c9c9c" text-anchor="middle">Literature Review Made Simple</text>
     </svg>
     '''
-    
+
     # Function to encode the SVG to a data URL for inline display
     def svg_to_data_url(svg):
         b64 = base64.b64encode(svg.encode('utf-8')).decode('utf-8')
         return f'data:image/svg+xml;base64,{b64}'
-    
+
     # Display logo centered
     st.markdown(
         f'<div style="display: flex; justify-content: center;"><img src="{svg_to_data_url(logo_svg)}" width="240px"></div>',
@@ -79,12 +80,12 @@ def main():
     col1, col2, col3 = st.columns(3)
     with col1:
         research_topic = st.text_input(
-            "Research Topic", "Drop your Research Idea Here")
+            "Research Topic", placeholder="Drop your Research Idea Here", label_visibility="visible")
     with col2:
         open_ai_key = st.text_input(
-            "OpenAI API Key (Optional)", type="password")
+            "OpenAI API Key (Optional)", type="password", placeholder="Your OpenAI API Key", label_visibility="visible")
     with col3:
-        base_url = st.text_input("Base URL (Optional)", value="")
+        base_url = st.text_input("Base URL (Optional)", value="", placeholder="Base URL for API", label_visibility="visible")
 
     col4, col5, col6, col7, col8 = st.columns(5)
     with col4:
@@ -157,33 +158,7 @@ def main():
     # Only show results if they have been generated
     if st.session_state.get("results_generated", False):
         st.markdown("---")
-        st.markdown("## Papers Information")
-
-        # Read and display papers info from literature_data.json
-        data_file = os.path.join("database", "literature_data.json")
-        if os.path.exists(data_file):
-            try:
-                with open(data_file, "r", encoding="utf-8", errors="replace") as f:
-                    data = json.load(f)
-                if "sub_topics" in data:
-                    for sub_topic, papers in data["sub_topics"].items():
-                        st.markdown(f"### {sub_topic}")
-                        for paper in papers:
-                            st.markdown(
-                                f"**Title:** {paper.get('title', 'N/A')}")
-                            st.markdown(
-                                f"**Published:** {paper.get('published', 'N/A')}")
-                            st.markdown(
-                                f"**Link:** {paper.get('link', 'N/A')}")
-                            st.markdown("---")
-                else:
-                    st.warning("No papers info found in literature_data.json.")
-            except Exception as e:
-                st.error(f"Error reading literature_data.json: {e}")
-        else:
-            st.error("literature_data.json not found.")
-
-        st.markdown("## Download Files")
+        st.markdown("## Generated Files")
         if st.session_state["result_files"]:
             for file_name, file_content in st.session_state["result_files"].items():
                 # Determine MIME type based on file extension
@@ -202,6 +177,35 @@ def main():
         else:
             st.info(
                 "No result files available. Please run the workflow to generate files.")
+
+        st.markdown("## Papers Information")
+
+        # Read and display papers info from literature_data.json
+        data_file = os.path.join("database", "literature_data.json")
+        if os.path.exists(data_file):
+            try:
+                with open(data_file, "r", encoding="utf-8", errors="replace") as f:
+                    data = json.load(f)
+                if "sub_topics" in data:
+                    for sub_topic, papers in data["sub_topics"].items():
+                        st.markdown(f"### {sub_topic}")
+                        for paper in papers:
+                            st.markdown(
+                                f"**Title:** {paper.get('title', 'N/A')}")
+                            st.markdown(
+                                f"**Summary:** {paper.get('summary', 'N/A')}")
+                            st.markdown(
+                                f"**Published:** {paper.get('published', 'N/A')}")
+                            st.markdown(
+                                f"**Link:** {paper.get('link', 'N/A')}")
+                            st.markdown("---")
+                else:
+                    st.warning("No papers info found in literature_data.json.")
+            except Exception as e:
+                st.error(f"Error reading literature_data.json: {e}")
+        else:
+            st.error("literature_data.json not found.")
+
     else:
         st.info("Results will be displayed here once the workflow is complete.")
 
