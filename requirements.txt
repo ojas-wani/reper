@@ -1,7 +1,9 @@
 openai
+streamlit
 arxiv
 python-dotenv
 huggingface_hub
 regex
 numpy
 sentence_transformers
+torch
