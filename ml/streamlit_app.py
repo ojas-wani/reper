@@ -8,30 +8,10 @@ from literature_review import perform_literature_review
 import generate_report
 import novel_ideas
 import torch
-import time
-from functools import lru_cache
-import logging
-from concurrent.futures import ThreadPoolExecutor
-import queue
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('app.log'),
-        logging.StreamHandler()
-    ]
-)
-
-# Initialize thread pool for handling concurrent requests
-executor = ThreadPoolExecutor(max_workers=4)
-request_queue = queue.Queue()
 
 torch.classes.__path__ = []
 
-# Cache for storing results
-@lru_cache(maxsize=10)
+
 def load_result_files(db_folder="database"):
     result_files = {}
     if os.path.exists(db_folder):
@@ -42,61 +22,18 @@ def load_result_files(db_folder="database"):
                 with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                     result_files[file_name] = f.read()
             except Exception as e:
-                logging.error(f"Error reading {file_name}: {e}")
                 st.error(f"Error reading {file_name}: {e}")
     return result_files
 
-def process_request(research_topic, start_year, end_year, max_value, open_ai_key, base_url, generate_report_flag, generate_novel_approach_flag):
-    try:
-        # Run the literature review step
-        literature_data = perform_literature_review(
-            research_topic,
-            start_year,
-            end_year,
-            max_count=max_value,
-            open_ai_key=open_ai_key,
-            base_url=base_url
-        )
-        
-        if literature_data is None:
-            logging.error("Literature review failed")
-            return None, "Literature review failed. Please check the logs for errors."
-
-        # Generate report if requested
-        if generate_report_flag:
-            generate_report.generate_literature_report(
-                open_ai_key=open_ai_key,
-                base_url=base_url
-            )
-
-        # Generate novel approach if requested
-        if generate_novel_approach_flag:
-            novel_ideas.propose_novel_approach_and_save(
-                open_ai_key=open_ai_key,
-                base_url=base_url
-            )
-
-        return literature_data, None
-    except Exception as e:
-        logging.error(f"Error processing request: {e}")
-        return None, f"An error occurred: {str(e)}"
 
 def main():
-    st.set_page_config(
-        page_title="Research Literature Review",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
+    st.set_page_config(page_title="Research Literature Review", layout="wide")
 
-    # Initialize session state
+    # Initialize session state for result files and results_generated flag if not already present.
     if "result_files" not in st.session_state:
         st.session_state["result_files"] = {}
     if "results_generated" not in st.session_state:
         st.session_state["results_generated"] = False
-    if "processing" not in st.session_state:
-        st.session_state["processing"] = False
-    if "request_id" not in st.session_state:
-        st.session_state["request_id"] = None
 
     # Top: Display Logo using SVG
     logo_svg = '''
@@ -138,115 +75,129 @@ def main():
                 unsafe_allow_html=True)
     st.markdown("---")
 
-    # Input fields with validation
-    with st.form("research_form"):
+    # Two rows of input fields
+    st.markdown("### Input Parameters")
+    col1, col2, col3 = st.columns(3)
+    with col1:
         research_topic = st.text_input(
             "Research Topic",
             placeholder="Drop your Research Idea Here",
             label_visibility="visible"
         )
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            open_ai_key = st.text_input(
-                "OpenAI API Key (Optional)",
-                type="password",
-                placeholder="Your OpenAI API Key",
-                label_visibility="visible"
-            )
-        with col2:
-            base_url = st.text_input(
-                "Base URL (Optional)",
-                value="",
-                placeholder="Base URL for API",
-                label_visibility="visible"
-            )
-
-        col3, col4, col5 = st.columns(3)
-        with col3:
-            max_value = st.number_input(
-                "Max Papers to Collect",
-                min_value=1,
-                max_value=100,
-                value=20,
-                step=1
-            )
-        with col4:
-            start_year = st.number_input(
-                "Start Year",
-                min_value=1900,
-                max_value=2100,
-                value=2020,
-                step=1
-            )
-        with col5:
-            end_year = st.number_input(
-                "End Year",
-                min_value=1900,
-                max_value=2100,
-                value=2025,
-                step=1
-            )
-
-        col6, col7 = st.columns(2)
-        with col6:
-            generate_report_flag = st.checkbox("Generate Report", value=True)
-        with col7:
-            generate_novel_approach_flag = st.checkbox(
-                "Generate Novel Approach", value=True)
-
-        submitted = st.form_submit_button("Get Results", disabled=st.session_state.processing)
-
-    if submitted and research_topic.strip():
-        st.session_state.processing = True
-        st.session_state.request_id = time.time()
-
-        # Clean optional inputs
-        open_ai_key = open_ai_key.strip() or None
-        base_url = base_url.strip() or None
-
-        # Process request asynchronously
-        future = executor.submit(
-            process_request,
-            research_topic,
-            start_year,
-            end_year,
-            max_value,
-            open_ai_key,
-            base_url,
-            generate_report_flag,
-            generate_novel_approach_flag
+    with col2:
+        open_ai_key = st.text_input(
+            "OpenAI API Key (Optional)",
+            type="password",
+            placeholder="Your OpenAI API Key",
+            label_visibility="visible"
+        )
+    with col3:
+        base_url = st.text_input(
+            "Base URL (Optional)",
+            value="",
+            placeholder="Base URL for API",
+            label_visibility="visible"
         )
 
-        # Show progress bar
-        progress_bar = st.progress(0)
-        status_text = st.empty()
+    col4, col5, col6, col7, col8 = st.columns(5)
+    with col4:
+        max_value = st.number_input(
+            "Max Papers to Collect",
+            min_value=1,
+            max_value=100,
+            value=20,
+            step=1
+        )
+    with col5:
+        start_year = st.number_input(
+            "Start Year",
+            min_value=1900,
+            max_value=2100,
+            value=2020,
+            step=1
+        )
+    with col6:
+        end_year = st.number_input(
+            "End Year",
+            min_value=1900,
+            max_value=2100,
+            value=2025,
+            step=1
+        )
+    with col7:
+        generate_report_flag = st.checkbox("Generate Report", value=True)
+    with col8:
+        generate_novel_approach_flag = st.checkbox(
+            "Generate Novel Approach", value=True)
 
-        while not future.done():
-            progress_bar.progress(50)
-            status_text.text("Processing your request...")
-            time.sleep(0.1)
+    # Centered Get Results button
+    st.markdown("<br>", unsafe_allow_html=True)
+    button_col1, button_col2, button_col3 = st.columns([1, 2, 1])
+    with button_col2:
+        # Disable button if the research topic is empty
+        disabled_button = (research_topic.strip() == "")
 
-        literature_data, error = future.result()
-        
-        if error:
-            st.error(error)
-        else:
-            st.success("Processing completed successfully!")
+        if st.button("Get Results", disabled=disabled_button):
+            # Clean optional inputs
+            open_ai_key = open_ai_key.strip() or None
+            base_url = base_url.strip() or None
+
+            # Run the literature review step
+            with st.spinner("Performing literature review..."):
+                literature_data = perform_literature_review(
+                    research_topic,
+                    start_year,
+                    end_year,
+                    max_count=max_value,
+                    open_ai_key=open_ai_key,
+                    base_url=base_url
+                )
+            if literature_data is None:
+                st.error(
+                    "Literature review failed. Please check the logs for errors.")
+                return
+            st.success("Literature review completed!")
+
+            # Conditionally generate the literature report
+            if generate_report_flag:
+                with st.spinner("Generating literature report..."):
+                    generate_report.generate_literature_report(
+                        open_ai_key=open_ai_key,
+                        base_url=base_url
+                    )
+                st.success("Literature report generated!")
+            else:
+                st.info("Skipped literature report generation.")
+
+            # Conditionally generate the novel research approach
+            if generate_novel_approach_flag:
+                with st.spinner("Generating novel research approach..."):
+                    novel_ideas.propose_novel_approach_and_save(
+                        open_ai_key=open_ai_key,
+                        base_url=base_url
+                    )
+                st.success("Novel research approach generated!")
+            else:
+                st.info("Skipped novel research approach generation.")
+
+            # Load generated files into session state for persistent download links.
             st.session_state["result_files"] = load_result_files()
+            # Set flag to show results
             st.session_state["results_generated"] = True
 
-        st.session_state.processing = False
-        progress_bar.progress(100)
-
-    # Display results if available
+    # Only show results if they have been generated
     if st.session_state.get("results_generated", False):
         st.markdown("---")
         st.markdown("## Generated Files")
-        
         if st.session_state["result_files"]:
             for file_name, file_content in st.session_state["result_files"].items():
-                mime = "application/json" if file_name.endswith(".json") else "text/markdown" if file_name.endswith(".md") else "text/plain"
+                # Determine MIME type based on file extension
+                if file_name.endswith(".json"):
+                    mime = "application/json"
+                elif file_name.endswith(".md"):
+                    mime = "text/markdown"
+                else:
+                    mime = "text/plain"
                 st.download_button(
                     label=f"Download {file_name}",
                     data=file_content,
@@ -254,10 +205,12 @@ def main():
                     mime=mime
                 )
         else:
-            st.info("No result files available. Please run the workflow to generate files.")
+            st.info(
+                "No result files available. Please run the workflow to generate files.")
 
-        # Display papers information
         st.markdown("## Papers Information")
+
+        # Read and display papers info from literature_data.json
         data_file = os.path.join("database", "literature_data.json")
         if os.path.exists(data_file):
             try:
@@ -265,20 +218,27 @@ def main():
                     data = json.load(f)
                 if "sub_topics" in data:
                     for sub_topic, papers in data["sub_topics"].items():
-                        with st.expander(f"📚 {sub_topic}"):
-                            for paper in papers:
-                                st.markdown(f"**Title:** {paper.get('title', 'N/A')}")
-                                st.markdown(f"**Summary:** {paper.get('summary', 'N/A')}")
-                                st.markdown(f"**Published:** {paper.get('published', 'N/A')}")
-                                st.markdown(f"**Link:** {paper.get('link', 'N/A')}")
-                                st.markdown("---")
+                        st.markdown(f"### {sub_topic}")
+                        for paper in papers:
+                            st.markdown(
+                                f"**Title:** {paper.get('title', 'N/A')}")
+                            st.markdown(
+                                f"**Summary:** {paper.get('summary', 'N/A')}")
+                            st.markdown(
+                                f"**Published:** {paper.get('published', 'N/A')}")
+                            st.markdown(
+                                f"**Link:** {paper.get('link', 'N/A')}")
+                            st.markdown("---")
                 else:
                     st.warning("No papers info found in literature_data.json.")
             except Exception as e:
-                logging.error(f"Error reading literature_data.json: {e}")
                 st.error(f"Error reading literature_data.json: {e}")
         else:
             st.error("literature_data.json not found.")
+
+    else:
+        st.info("Results will be displayed here once the workflow is complete.")
+
 
 if __name__ == "__main__":
     main()
