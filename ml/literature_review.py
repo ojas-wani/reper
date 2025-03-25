@@ -6,6 +6,7 @@ import json
 from datetime import datetime
 from tools import ArxivSearch
 from agents import SubTopicAgent
+from config import DATABASE_FOLDER
 
 
 def extract_sub_topics(text):
@@ -44,103 +45,119 @@ def extract_paper_metadata(paper):
         return None
 
 
-def perform_literature_review(research_topic, start_year, end_year, max_count=50, open_ai_key=None, base_url=None):
+def perform_literature_review(research_topic, start_year, end_year, max_count=20, open_ai_key=None, base_url=None, output_dir=None):
     """
-    Perform a literature review:
-      1. Generate sub-topics (via SubTopicAgent).
-      2. Determine how many papers per sub-topic, so total does not exceed max_count.
-      3. For each sub-topic, fetch papers (filtered by date) and collect up to that limit.
-      4. Save results to literature_data.json.
+    Perform literature review for the given research topic.
+    
+    Args:
+        research_topic (str): The research topic to analyze
+        start_year (int): Start year for the literature search
+        end_year (int): End year for the literature search
+        max_count (int): Maximum number of papers to collect
+        open_ai_key (str, optional): OpenAI API key
+        base_url (str, optional): Base URL for the API
+        output_dir (str, optional): Directory to save results. If None, uses default database folder.
     """
-    print(f"\n=== Starting Literature Review: {research_topic} ===")
-    print(
-        f"Date Range: {start_year}-{end_year}, Max total papers: {max_count}\n")
-
-    # Base structure for the final JSON
-    report = {
-        "metadata": {
-            "research_topic": research_topic,
-            "generated_at": datetime.now().isoformat(),
-            "source": "arXiv"
-        },
-        "sub_topics": {}
-    }
-
-    # 1) Generate Sub-Topics
     try:
-        print("Generating sub-topics...")
-        sub_agent = SubTopicAgent(
-            model="gemini-2.0-flash",
-            openai_api_key=open_ai_key,
-            base_url=base_url
-        )
-        sub_topic_response = sub_agent.inference(research_topic)
-        sub_topics = extract_sub_topics(sub_topic_response)
-        if not sub_topics:
-            print("No sub-topics identified; exiting.")
+        # Use provided output directory or default to database folder
+        if output_dir is None:
+            output_dir = DATABASE_FOLDER
+        os.makedirs(output_dir, exist_ok=True)
+
+        print(f"\n=== Starting Literature Review: {research_topic} ===")
+        print(
+            f"Date Range: {start_year}-{end_year}, Max total papers: {max_count}\n")
+
+        # Base structure for the final JSON
+        report = {
+            "metadata": {
+                "research_topic": research_topic,
+                "generated_at": datetime.now().isoformat(),
+                "source": "arXiv"
+            },
+            "sub_topics": {}
+        }
+
+        # 1) Generate Sub-Topics
+        try:
+            print("Generating sub-topics...")
+            sub_agent = SubTopicAgent(
+                model="gemini-2.0-flash",
+                openai_api_key=open_ai_key,
+                base_url=base_url
+            )
+            sub_topic_response = sub_agent.inference(research_topic)
+            sub_topics = extract_sub_topics(sub_topic_response)
+            if not sub_topics:
+                print("No sub-topics identified; exiting.")
+                return None
+
+            print(f"Identified sub-topics:\n  " + "\n  ".join(sub_topics))
+        except Exception as e:
+            print(f"Failed to generate sub-topics: {e}")
             return None
 
-        print(f"Identified sub-topics:\n  " + "\n  ".join(sub_topics))
-    except Exception as e:
-        print(f"Failed to generate sub-topics: {e}")
-        return None
+        # 2) Decide how many papers per sub-topic
+        sub_topic_count = len(sub_topics)
+        papers_per_subtopic = max_count // sub_topic_count  # integer division
+        if papers_per_subtopic < 1:
+            print(
+                f"max_count ({max_count}) is too small to allocate at least 1 paper per sub-topic.")
+            print("No papers will be collected. Exiting.")
+            return None
 
-    # 2) Decide how many papers per sub-topic
-    sub_topic_count = len(sub_topics)
-    papers_per_subtopic = max_count // sub_topic_count  # integer division
-    if papers_per_subtopic < 1:
         print(
-            f"max_count ({max_count}) is too small to allocate at least 1 paper per sub-topic.")
-        print("No papers will be collected. Exiting.")
-        return None
+            f"\nWe have {sub_topic_count} sub-topics. Each sub-topic will collect up to {papers_per_subtopic} papers.\n")
 
-    print(
-        f"\nWe have {sub_topic_count} sub-topics. Each sub-topic will collect up to {papers_per_subtopic} papers.\n")
+        arxiv_engine = ArxivSearch()
 
-    arxiv_engine = ArxivSearch()
+        # 3) For each sub-topic, collect up to papers_per_subtopic
+        for idx, st in enumerate(sub_topics, 1):
+            print(f"Processing sub-topic {idx}/{sub_topic_count}: {st}")
+            report["sub_topics"][st] = []
 
-    # 3) For each sub-topic, collect up to papers_per_subtopic
-    for idx, st in enumerate(sub_topics, 1):
-        print(f"Processing sub-topic {idx}/{sub_topic_count}: {st}")
-        report["sub_topics"][st] = []
+            try:
+                raw_papers = arxiv_engine.find_papers_by_str(
+                    query=st,
+                    start_year=start_year,
+                    end_year=end_year,
+                    N=100  # large enough to find papers_per_subtopic
+                )
+                papers = raw_papers.split("\n\n")
+                print(f"  Found {len(papers)} papers (post date-filter).")
+            except Exception as e:
+                print(f"  Paper search failed for sub-topic '{st}': {e}")
+                continue
 
+            # Now parse and collect up to papers_per_subtopic
+            collected = 0
+            for paper_str in papers:
+                if collected >= papers_per_subtopic:
+                    break
+
+                paper_data = extract_paper_metadata(paper_str)
+                if paper_data:
+                    report["sub_topics"][st].append(paper_data)
+                    collected += 1
+                    print(f"    Added paper {collected}: {paper_data['title']}")
+                else:
+                    print("    Did not find any paper in between the dates")
+
+        # 4) Save final JSON
         try:
-            raw_papers = arxiv_engine.find_papers_by_str(
-                query=st,
-                start_year=start_year,
-                end_year=end_year,
-                N=100  # large enough to find papers_per_subtopic
-            )
-            papers = raw_papers.split("\n\n")
-            print(f"  Found {len(papers)} papers (post date-filter).")
+            # Save to user-specific directory
+            output_file = os.path.join(output_dir, "literature_data.json")
+            with open(output_file, "w", encoding="utf-8") as f:
+                json.dump(report, f, indent=2)
+            print("\n=== Data collection completed successfully ===")
         except Exception as e:
-            print(f"  Paper search failed for sub-topic '{st}': {e}")
-            continue
+            print(f"\nFailed to save results: {e}")
 
-        # Now parse and collect up to papers_per_subtopic
-        collected = 0
-        for paper_str in papers:
-            if collected >= papers_per_subtopic:
-                break
+        return report
 
-            paper_data = extract_paper_metadata(paper_str)
-            if paper_data:
-                report["sub_topics"][st].append(paper_data)
-                collected += 1
-                print(f"    Added paper {collected}: {paper_data['title']}")
-            else:
-                print("    Did not find any paper in between the dates")
-
-    # 4) Save final JSON
-    try:
-        os.makedirs("database", exist_ok=True)
-        with open("database/literature_data.json", "w") as f:
-            json.dump(report, f, indent=2)
-        print("\n=== Data collection completed successfully ===")
     except Exception as e:
-        print(f"\nFailed to save results: {e}")
-
-    return report
+        print(f"Error in literature review: {e}")
+        return None
 
 
 if __name__ == "__main__":

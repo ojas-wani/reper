@@ -13,6 +13,10 @@ from functools import lru_cache
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import queue
+import uuid
+import shutil
+from pathlib import Path
+from config import DATABASE_FOLDER, MAX_WORKERS, REQUEST_TIMEOUT
 
 # Configure logging
 logging.basicConfig(
@@ -25,20 +29,49 @@ logging.basicConfig(
 )
 
 # Initialize thread pool for handling concurrent requests
-executor = ThreadPoolExecutor(max_workers=4)
+executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 request_queue = queue.Queue()
 
 torch.classes.__path__ = []
 
+def get_session_id():
+    """Generate or retrieve a unique session ID for each user."""
+    if 'session_id' not in st.session_state:
+        st.session_state['session_id'] = str(uuid.uuid4())
+    return st.session_state['session_id']
+
+def get_user_database_folder():
+    """Get the database folder specific to the current user's session."""
+    session_id = get_session_id()
+    user_db_folder = os.path.join(DATABASE_FOLDER, session_id)
+    os.makedirs(user_db_folder, exist_ok=True)
+    return user_db_folder
+
+def cleanup_old_sessions():
+    """Clean up database folders older than 24 hours."""
+    try:
+        current_time = time.time()
+        for session_folder in os.listdir(DATABASE_FOLDER):
+            session_path = os.path.join(DATABASE_FOLDER, session_folder)
+            if os.path.isdir(session_path):
+                # Check if folder is older than 24 hours
+                if current_time - os.path.getmtime(session_path) > 86400:
+                    shutil.rmtree(session_path)
+    except Exception as e:
+        logging.error(f"Error cleaning up old sessions: {e}")
+
 # Cache for storing results
 @lru_cache(maxsize=10)
-def load_result_files(db_folder="database"):
+def load_result_files(db_folder=None):
+    """Load result files from the user-specific database folder."""
+    if db_folder is None:
+        db_folder = get_user_database_folder()
+    
     result_files = {}
     if os.path.exists(db_folder):
         for file_name in os.listdir(db_folder):
             file_path = os.path.join(db_folder, file_name)
             try:
-                # Use errors="replace" to handle decoding issues.
                 with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                     result_files[file_name] = f.read()
             except Exception as e:
@@ -47,15 +80,19 @@ def load_result_files(db_folder="database"):
     return result_files
 
 def process_request(research_topic, start_year, end_year, max_value, open_ai_key, base_url, generate_report_flag, generate_novel_approach_flag):
+    """Process a request in a user-specific context."""
     try:
-        # Run the literature review step
+        user_db_folder = get_user_database_folder()
+        
+        # Run the literature review step with user-specific database
         literature_data = perform_literature_review(
             research_topic,
             start_year,
             end_year,
             max_count=max_value,
             open_ai_key=open_ai_key,
-            base_url=base_url
+            base_url=base_url,
+            output_dir=user_db_folder  # Pass the user-specific output directory
         )
         
         if literature_data is None:
@@ -66,14 +103,16 @@ def process_request(research_topic, start_year, end_year, max_value, open_ai_key
         if generate_report_flag:
             generate_report.generate_literature_report(
                 open_ai_key=open_ai_key,
-                base_url=base_url
+                base_url=base_url,
+                output_dir=user_db_folder  # Pass the user-specific output directory
             )
 
         # Generate novel approach if requested
         if generate_novel_approach_flag:
             novel_ideas.propose_novel_approach_and_save(
                 open_ai_key=open_ai_key,
-                base_url=base_url
+                base_url=base_url,
+                output_dir=user_db_folder  # Pass the user-specific output directory
             )
 
         return literature_data, None
@@ -97,6 +136,13 @@ def main():
         st.session_state["processing"] = False
     if "request_id" not in st.session_state:
         st.session_state["request_id"] = None
+
+    # Clean up old sessions periodically
+    if 'last_cleanup' not in st.session_state:
+        st.session_state['last_cleanup'] = time.time()
+    elif time.time() - st.session_state['last_cleanup'] > 3600:  # Clean up every hour
+        cleanup_old_sessions()
+        st.session_state['last_cleanup'] = time.time()
 
     # Top: Display Logo using SVG
     logo_svg = '''
@@ -222,13 +268,15 @@ def main():
         progress_bar = st.progress(0)
         status_text = st.empty()
 
-        while not future.done():
-            progress_bar.progress(50)
-            status_text.text("Processing your request...")
-            time.sleep(0.1)
+        try:
+            literature_data, error = future.result(timeout=REQUEST_TIMEOUT)
+        except TimeoutError:
+            error = "Request timed out. Please try again with a smaller dataset."
+            literature_data = None
+        except Exception as e:
+            error = f"An error occurred: {str(e)}"
+            literature_data = None
 
-        literature_data, error = future.result()
-        
         if error:
             st.error(error)
         else:
@@ -258,7 +306,7 @@ def main():
 
         # Display papers information
         st.markdown("## Papers Information")
-        data_file = os.path.join("database", "literature_data.json")
+        data_file = os.path.join(get_user_database_folder(), "literature_data.json")
         if os.path.exists(data_file):
             try:
                 with open(data_file, "r", encoding="utf-8", errors="replace") as f:
