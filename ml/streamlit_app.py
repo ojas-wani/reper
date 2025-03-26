@@ -322,9 +322,16 @@ def main():
             try:
                 with open(data_file, "r", encoding="utf-8", errors="replace") as f:
                     data = json.load(f)
+                # Debug information
+                # st.write("Debug - Data loaded successfully")
+                # st.write("Debug - Data structure:", data.keys())
+                
                 if "sub_topics" in data:
+                    # Debug information
+                    # st.write("Debug - Number of subtopics:", len(data["sub_topics"]))
+                    
                     # Calculate number of subtopics to show
-                    num_subtopics = min(6 - max_value, len(data["sub_topics"]))
+                    num_subtopics = len(data["sub_topics"])
                     subtopics = list(data["sub_topics"].items())[:num_subtopics]
                     
                     # Only show papers up to max_value
@@ -333,9 +340,15 @@ def main():
                         if total_papers >= max_value:
                             break
                         st.markdown(f"### {sub_topic}")
+                        # Debug information
+                        # st.write(f"Debug - Papers in {sub_topic}:", len(papers))
+                        
                         for paper in papers:
                             if total_papers >= max_value:
                                 break
+                            # Debug information
+                            # st.write("Debug - Paper data:", paper)
+                            
                             st.markdown(f"""
                                 <div class='paper-card'>
                                     <h4 style='color: #2c3e50; margin-bottom: 10px;'>{paper.get('title', 'N/A')}</h4>
@@ -349,6 +362,7 @@ def main():
                     st.warning("No papers info found in literature_data.json.")
             except Exception as e:
                 st.error(f"Error reading literature_data.json: {e}")
+                st.write("Debug - Full error:", str(e))
         else:
             st.error("literature_data.json not found.")
     else:
