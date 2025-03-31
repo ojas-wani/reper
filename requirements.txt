@@ -7,3 +7,5 @@ regex
 numpy
 sentence_transformers
 torch
+fitz
+PyMuPDF
