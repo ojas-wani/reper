@@ -10,7 +10,7 @@ class ArxivSearch:
         # Using a basic model here for demo; in practice, you could use a more powerful model.
         self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
-    def find_papers_by_str(self, query, start_year, end_year, N=5):
+    def find_papers_by_str(self, query, start_year, end_year, N=20):
         try:
             search = arxiv.Search(
                 query=f"abs:{query}",

@@ -23,12 +23,87 @@ class BaseAgent:
 class SubTopicAgent(BaseAgent):
     def system_prompt(self):
         return (
-            "Generate 5-7 specific research sub-topics for a literature review. "
+            "Generate exactly 6-7 specific research sub-topics for a literature review. "
             "Format: Numbered list of concise phrases (3-5 words).\n"
             "Example:\n"
             "1. Neural radiance fields in 3D reconstruction\n"
             "2. Diffusion models for medical imaging"
         )
+
+    def get_user_subtopics(self):
+        """Get sub-topics from user input."""
+        print("\nEnter your sub-topics (one per line). Type 'done' when finished:")
+        user_subtopics = []
+        while True:
+            subtopic = input("> ").strip()
+            if subtopic.lower() == 'done':
+                break
+            if subtopic:  # Only add non-empty sub-topics
+                user_subtopics.append(subtopic)
+        return user_subtopics
+
+    def review_and_refine_subtopics(self, generated_subtopics, user_subtopics):
+        """Show all sub-topics and allow user to refine them."""
+        all_subtopics = generated_subtopics + user_subtopics
+        
+        while True:
+            print("\nCurrent sub-topics:")
+            for i, subtopic in enumerate(all_subtopics, 1):
+                print(f"{i}. {subtopic}")
+            
+            print("\nOptions:")
+            print("1. Add more sub-topics")
+            print("2. Remove a sub-topic")
+            print("3. Edit a sub-topic")
+            print("4. Continue with current sub-topics")
+            
+            choice = input("\nEnter your choice (1-4): ").strip()
+            
+            if choice == '1':
+                new_subtopics = self.get_user_subtopics()
+                all_subtopics.extend(new_subtopics)
+            elif choice == '2':
+                try:
+                    index = int(input("Enter the number of the sub-topic to remove: ")) - 1
+                    if 0 <= index < len(all_subtopics):
+                        removed = all_subtopics.pop(index)
+                        print(f"Removed: {removed}")
+                    else:
+                        print("Invalid index")
+                except ValueError:
+                    print("Please enter a valid number")
+            elif choice == '3':
+                try:
+                    index = int(input("Enter the number of the sub-topic to edit: ")) - 1
+                    if 0 <= index < len(all_subtopics):
+                        new_text = input("Enter new text: ").strip()
+                        if new_text:
+                            all_subtopics[index] = new_text
+                    else:
+                        print("Invalid index")
+                except ValueError:
+                    print("Please enter a valid number")
+            elif choice == '4':
+                break
+            else:
+                print("Invalid choice. Please try again.")
+        
+        return all_subtopics
+
+    def get_final_subtopics(self, prompt):
+        """Get both generated and user sub-topics, then refine them."""
+        # Get AI-generated sub-topics
+        generated_response = self.inference(prompt)
+        generated_subtopics = [line.strip() for line in generated_response.split('\n') 
+                             if line.strip() and line[0].isdigit()]
+        
+        # Get user sub-topics
+        user_subtopics = self.get_user_subtopics()
+        
+        # Review and refine all sub-topics
+        final_subtopics = self.review_and_refine_subtopics(generated_subtopics, user_subtopics)
+        
+        return final_subtopics
 
 
 class PostdocAgent(BaseAgent):

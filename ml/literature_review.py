@@ -44,10 +44,10 @@ def extract_paper_metadata(paper):
         return None
 
 
-def perform_literature_review(research_topic, start_year, end_year, max_count=50, open_ai_key=None, base_url=None):
+def perform_literature_review(research_topic, start_year, end_year, max_count=50, open_ai_key=None, base_url=None, user_subtopics=None):
     """
     Perform a literature review:
-      1. Generate sub-topics (via SubTopicAgent).
+      1. Use provided sub-topics or generate new ones if none provided
       2. Determine how many papers per sub-topic, so total does not exceed max_count.
       3. For each sub-topic, fetch papers (filtered by date) and collect up to that limit.
       4. Save results to literature_data.json.
@@ -66,23 +66,28 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
         "sub_topics": {}
     }
 
-    # 1) Generate Sub-Topics
+    # 1) Get Sub-Topics (either from user or generate new ones)
     try:
-        print("Generating sub-topics...")
-        sub_agent = SubTopicAgent(
-            model="gemini-2.0-flash",
-            openai_api_key=open_ai_key,
-            base_url=base_url
-        )
-        sub_topic_response = sub_agent.inference(research_topic)
-        sub_topics = extract_sub_topics(sub_topic_response)
+        if user_subtopics:
+            print("Using user-provided sub-topics...")
+            sub_topics = user_subtopics
+        else:
+            print("Generating sub-topics...")
+            sub_agent = SubTopicAgent(
+                model="gemini-2.0-flash",
+                openai_api_key=open_ai_key,
+                base_url=base_url
+            )
+            sub_topic_response = sub_agent.inference(research_topic)
+            sub_topics = extract_sub_topics(sub_topic_response)
+            
         if not sub_topics:
             print("No sub-topics identified; exiting.")
             return None
 
         print(f"Identified sub-topics:\n  " + "\n  ".join(sub_topics))
     except Exception as e:
-        print(f"Failed to generate sub-topics: {e}")
+        print(f"Failed to get sub-topics: {e}")
         return None
 
     # 2) Decide how many papers per sub-topic
@@ -102,11 +107,14 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
         report["sub_topics"][st] = []
 
         try:
+            # Combine research topic with sub-topic for more focused search
+            combined_query = f"{research_topic} {st}"
+            print(f"  Searching with query: {combined_query}")
             raw_papers = arxiv_engine.find_papers_by_str(
-                query=st,
+                query=combined_query,
                 start_year=start_year,
                 end_year=end_year,
-                N=100  # large enough to find papers_per_subtopic
+                N=50  # Increased from 100 to ensure we get enough papers per sub-topic
             )
             papers = raw_papers.split("\n\n")
             print(f"  Found {len(papers)} papers (post date-filter).")
