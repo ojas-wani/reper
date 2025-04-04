@@ -1,73 +1,72 @@
 {
   "metadata": {
-    "research_topic": "scenario generation for autonomous driving ",
-    "generated_at": "2025-04-04T16:48:34.197521",
+    "research_topic": "game theory for esports",
+    "generated_at": "2025-04-04T16:52:57.861593",
     "source": "arXiv"
   },
   "sub_topics": {
-    " Criticality measures for scenarios": [
+    " Cheating detection game theory": [
       {
-        "title": "Assessing the Criticality of Longitudinal Driving Scenarios using Time Series Data",
-        "arxiv_id": "2305.20071v1",
-        "published": "2023-05-29",
-        "summary": "Unfortunately, many people die in car accidents. To reduce these accidents,\ncars are equipped with driving safety systems. With autonomous vehicles, the\ndriver's behavior becomes irrelevant as the car drives autonomously. All\nautonomous driving algorithms must undergo extensive testing and validation,\nespecially for safety-critical scenarios. Therefore, the detection of\nsafety-critical driving scenarios is essential for autonomous vehicles. This\npublication describes safety indicator metrics based on time series covering\nlongitudinal driving data to detect safety-critical driving scenarios.\nLink: http://arxiv.org/abs/2305.20071v1",
-        "link": "http://arxiv.org/abs/2305.20071v1"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    " Validation of generated scenarios": [
+    " Optimal strategies in esports": [
       {
-        "title": "Assessing the Criticality of Longitudinal Driving Scenarios using Time Series Data",
-        "arxiv_id": "2305.20071v1",
-        "published": "2023-05-29",
-        "summary": "Unfortunately, many people die in car accidents. To reduce these accidents,\ncars are equipped with driving safety systems. With autonomous vehicles, the\ndriver's behavior becomes irrelevant as the car drives autonomously. All\nautonomous driving algorithms must undergo extensive testing and validation,\nespecially for safety-critical scenarios. Therefore, the detection of\nsafety-critical driving scenarios is essential for autonomous vehicles. This\npublication describes safety indicator metrics based on time series covering\nlongitudinal driving data to detect safety-critical driving scenarios.\nLink: http://arxiv.org/abs/2305.20071v1",
-        "link": "http://arxiv.org/abs/2305.20071v1"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    " Scenario diversity and coverage": [
+    "overwatch": [
       {
-        "title": "PLT-D3: A High-fidelity Dynamic Driving Simulation Dataset for Stereo Depth and Scene Flow",
-        "arxiv_id": "2406.07667v1",
-        "published": "2024-06-11",
-        "summary": "Autonomous driving has experienced remarkable progress, bolstered by\ninnovations in computational hardware and sophisticated deep learning\nmethodologies. The foundation of these advancements rests on the availability\nand quality of datasets, which are crucial for the development and refinement\nof dependable and versatile autonomous driving algorithms. While numerous\ndatasets have been developed to support the evolution of autonomous driving\nperception technologies, few offer the diversity required to thoroughly test\nand enhance system robustness under varied weather conditions. Many public\ndatasets lack the comprehensive coverage of challenging weather scenarios and\ndetailed, high-resolution data, which are critical for training and validating\nadvanced autonomous-driving perception models. In this paper, we introduce\nPLT-D3; a Dynamic-weather Driving Dataset, designed specifically to enhance\nautonomous driving systems' adaptability to diverse weather conditions. PLT-D3\nprovides high-fidelity stereo depth and scene flow ground truth data generated\nusing Unreal Engine 5. In particular, this dataset includes synchronized\nhigh-resolution stereo image sequences that replicate a wide array of dynamic\nweather scenarios including rain, snow, fog, and diverse lighting conditions,\noffering an unprecedented level of realism in simulation-based testing. The\nprimary aim of PLT-D3 is to address the scarcity of comprehensive training and\ntesting resources that can simulate real-world weather variations. Benchmarks\nhave been established for several critical autonomous driving tasks using\nPLT-D3, such as depth estimation, optical flow and scene-flow to measure and\nenhance the performance of state-of-the-art models.\nLink: http://arxiv.org/abs/2406.07667v1",
-        "link": "http://arxiv.org/abs/2406.07667v1"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    " Generative adversarial networks (GANs)": [
+    " Negotiation in esports teams": [
       {
-        "title": "SUSTechGAN: Image Generation for Object Detection in Adverse Conditions of Autonomous Driving",
-        "arxiv_id": "2408.01430v2",
-        "published": "2024-07-18",
-        "summary": "Autonomous driving significantly benefits from data-driven deep neural\nnetworks. However, the data in autonomous driving typically fits the\nlong-tailed distribution, in which the critical driving data in adverse\nconditions is hard to collect. Although generative adversarial networks (GANs)\nhave been applied to augment data for autonomous driving, generating driving\nimages in adverse conditions is still challenging. In this work, we propose a\nnovel framework, SUSTechGAN, with customized dual attention modules,\nmulti-scale generators, and a novel loss function to generate driving images\nfor improving object detection of autonomous driving in adverse conditions. We\ntest the SUSTechGAN and the well-known GANs to generate driving images in\nadverse conditions of rain and night and apply the generated images to retrain\nobject detection networks. Specifically, we add generated images into the\ntraining datasets to retrain the well-known YOLOv5 and evaluate the improvement\nof the retrained YOLOv5 for object detection in adverse conditions. The\nexperimental results show that the generated driving images by our SUSTechGAN\nsignificantly improved the performance of retrained YOLOv5 in rain and night\nconditions, which outperforms the well-known GANs. The open-source code, video\ndescription and datasets are available on the page 1 to facilitate image\ngeneration development in autonomous driving under adverse conditions.\nLink: http://arxiv.org/abs/2408.01430v2",
-        "link": "http://arxiv.org/abs/2408.01430v2"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    "RL": [
+    " Esports market equilibrium models": [
       {
-        "title": "A Reinforcement Learning Benchmark for Autonomous Driving in Intersection Scenarios",
-        "arxiv_id": "2109.10557v1",
-        "published": "2021-09-22",
-        "summary": "In recent years, control under urban intersection scenarios becomes an\nemerging research topic. In such scenarios, the autonomous vehicle confronts\ncomplicated situations since it must deal with the interaction with social\nvehicles timely while obeying the traffic rules. Generally, the autonomous\nvehicle is supposed to avoid collisions while pursuing better efficiency. The\nexisting work fails to provide a framework that emphasizes the integrity of the\nscenarios while being able to deploy and test reinforcement learning(RL)\nmethods. Specifically, we propose a benchmark for training and testing RL-based\nautonomous driving agents in complex intersection scenarios, which is called\nRL-CIS. Then, a set of baselines are deployed consists of various algorithms.\nThe test benchmark and baselines are to provide a fair and comprehensive\ntraining and testing platform for the study of RL for autonomous driving in the\nintersection scenario, advancing the progress of RL-based methods for\nintersection autonomous driving control. The code of our proposed framework can\nbe found at https://github.com/liuyuqi123/ComplexUrbanScenarios.\nLink: http://arxiv.org/abs/2109.10557v1",
-        "link": "http://arxiv.org/abs/2109.10557v1"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    " Data-driven scenario extraction": [
+    " Behavioral game theory esports": [
       {
-        "title": "LeGEND: A Top-Down Approach to Scenario Generation of Autonomous Driving Systems Assisted by Large Language Models",
-        "arxiv_id": "2409.10066v1",
-        "published": "2024-09-16",
-        "summary": "Autonomous driving systems (ADS) are safety-critical and require\ncomprehensive testing before their deployment on public roads. While existing\ntesting approaches primarily aim at the criticality of scenarios, they often\noverlook the diversity of the generated scenarios that is also important to\nreflect system defects in different aspects. To bridge the gap, we propose\nLeGEND, that features a top-down fashion of scenario generation: it starts with\nabstract functional scenarios, and then steps downwards to logical and concrete\nscenarios, such that scenario diversity can be controlled at the functional\nlevel. However, unlike logical scenarios that can be formally described,\nfunctional scenarios are often documented in natural languages (e.g., accident\nreports) and thus cannot be precisely parsed and processed by computers. To\ntackle that issue, LeGEND leverages the recent advances of large language\nmodels (LLMs) to transform textual functional scenarios to formal logical\nscenarios. To mitigate the distraction of useless information in functional\nscenario description, we devise a two-phase transformation that features the\nuse of an intermediate language; consequently, we adopt two LLMs in LeGEND, one\nfor extracting information from functional scenarios, the other for converting\nthe extracted information to formal logical scenarios. We experimentally\nevaluate LeGEND on Apollo, an industry-grade ADS from Baidu. Evaluation results\nshow that LeGEND can effectively identify critical scenarios, and compared to\nbaseline approaches, LeGEND exhibits evident superiority in diversity of\ngenerated scenarios. Moreover, we also demonstrate the advantages of our\ntwo-phase transformation framework, and the accuracy of the adopted LLMs.\nLink: http://arxiv.org/abs/2409.10066v1",
-        "link": "http://arxiv.org/abs/2409.10066v1"
+        "title": "Esports Agents with a Theory of Mind: Towards Better Engagement, Education, and Engineering",
+        "arxiv_id": "2103.04940v1",
+        "published": "2021-03-08",
+        "summary": "The role of AI in esports is shifting from leveraging games as a testbed for\nimproving AI algorithms to addressing the needs of the esports players such as\nenhancing their gaming experience, esports skills, and providing coaching. For\nAI to be able to effectively address such needs in esports, AI agents require a\ntheory of mind, that is, the ability to infer players' tactics and intents. To\nthat end, in this position paper, we argue for human-in-the-loop approaches for\nthe discovery and computational embedding of the theory of mind within\nbehavioral models of esports players. We discuss that such approaches can be\nenabled by player-centric investigations on situated cognition that will expand\nour understanding of the cognitive and other unobservable factors that\ninfluence esports players' behaviors. We conclude by discussing the\nimplications of such a research direction in esports as well as broader\nimplications in engineering design and design education.\nLink: http://arxiv.org/abs/2103.04940v1",
+        "link": "http://arxiv.org/abs/2103.04940v1"
       }
     ],
-    " Rule-based scenario generation": [
+    " Team formation game theory": [
       {
-        "title": "A Scenario-Based Development Framework for Autonomous Driving",
-        "arxiv_id": "2011.01439v2",
-        "published": "2020-11-03",
-        "summary": "This article summarizes the research progress of scenario-based testing and\ndevelopment technology for autonomous vehicles. We systematically analyzed\nprevious research works and proposed the definition of scenario, the elements\nof the scenario ontology, the data source of the scenario, the processing\nmethod of the scenario data, and scenario-based V-Model. Moreover, we\nsummarized the automated test scenario construction method by random scenario\ngeneration and dangerous scenario generation.\nLink: http://arxiv.org/abs/2011.01439v2",
-        "link": "http://arxiv.org/abs/2011.01439v2"
+        "title": "Optimal Team Economic Decisions in Counter-Strike",
+        "arxiv_id": "2109.12990v1",
+        "published": "2021-09-20",
+        "summary": "The outputs of win probability models are often used to evaluate player\nactions. However, in some sports, such as the popular esport Counter-Strike,\nthere exist important team-level decisions. For example, at the beginning of\neach round in a Counter-Strike game, teams decide how much of their in-game\ndollars to spend on equipment. Because the dollars are a scarce resource,\ndifferent strategies have emerged concerning how teams should spend in\nparticular situations. To assess team purchasing decisions in-game, we\nintroduce a game-level win probability model to predict a team's chance of\nwinning a game at the beginning of a given round. We consider features such as\nteam scores, equipment, money, and spending decisions. Using our win\nprobability model, we investigate optimal team spending decisions for important\ngame scenarios. We identify a pattern of sub-optimal decision-making for CSGO\nteams. Finally, we introduce a metric, Optimal Spending Error (OSE), to rank\nteams by how closely their spending decisions follow our predicted optimal\nspending decisions.\nLink: http://arxiv.org/abs/2109.12990v1",
+        "link": "http://arxiv.org/abs/2109.12990v1"
       }
-    ],
-    "Here are 6 sub-topics for a literature review on scenario generation for autonomous driving:": []
+    ]
   }
 }

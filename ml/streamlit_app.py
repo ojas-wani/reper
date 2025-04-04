@@ -210,7 +210,7 @@ def main():
                     # Parse the generated sub-topics (remove numbers and dots)
                     parsed_subtopics = [s.split(". ", 1)[1] if ". " in s else s 
                                     for s in generated_subtopics.split("\n") 
-                                    if s.strip()]
+                                    if s.strip() and not s.startswith("Here are") and not s.startswith("subtopics")]
                     # Store AI-generated sub-topics separately
                     st.session_state.ai_subtopics = parsed_subtopics
                     # Store original AI-generated topics
@@ -323,9 +323,9 @@ def main():
                             )
                             generated_subtopics = agent.inference(research_topic)
                             # Parse the generated sub-topics (remove numbers and dots)
-                            parsed_subtopics = [st.split(". ", 1)[1] if ". " in st else st 
-                                            for st in generated_subtopics.split("\n") 
-                                            if st.strip()]
+                            parsed_subtopics = [s.split(". ", 1)[1] if ". " in s else s 
+                                            for s in generated_subtopics.split("\n") 
+                                            if s.strip() and not s.startswith("Here are") and not s.startswith("subtopics")]
                             # Store AI-generated sub-topics
                             st.session_state.ai_subtopics = parsed_subtopics
                             # Store original AI-generated topics
@@ -436,47 +436,6 @@ def main():
                 <p style='color: #7f8c8d;'>Detailed information about collected papers</p>
             </div>
         """, unsafe_allow_html=True)
-
-        # Display the subtopics used in the search
-        if st.session_state.get("results_generated", False):
-            st.markdown("""
-                <div class="subtopic-section">
-                    <h4 style="color: #2c3e50; margin-bottom: 15px;">Research Topics Used</h4>
-                    <p class="info-text">The following research topics were used for the literature review:</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # Show AI-generated topics
-            if st.session_state.original_ai_subtopics:
-                st.markdown("""
-                    <div style="margin-bottom: 20px;">
-                        <h5 style="color: #388e3c; margin-bottom: 10px;">AI-Generated Research Topics</h5>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-                for i, subtopic in enumerate(st.session_state.original_ai_subtopics, 1):
-                    st.markdown(f"""
-                        <div class="ai-subtopic">
-                            <span style="font-weight: 600; color: #388e3c">{i}.</span> {subtopic}
-                        </div>
-                    """, unsafe_allow_html=True)
-            
-            # Show user-entered topics
-            if st.session_state.subtopics:
-                st.markdown("""
-                    <div style="margin-top: 20px; margin-bottom: 20px;">
-                        <h5 style="color: #1976d2; margin-bottom: 10px;">Your Added Research Topics</h5>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-                for i, subtopic in enumerate(st.session_state.subtopics, 1):
-                    st.markdown(f"""
-                        <div class="user-subtopic">
-                            <span style="font-weight: 600; color: #1976d2">{i}.</span> {subtopic}
-                        </div>
-                    """, unsafe_allow_html=True)
-            
-            st.markdown("<br>", unsafe_allow_html=True)
 
         data_file = os.path.join("database", "literature_data.json")
         if os.path.exists(data_file):
