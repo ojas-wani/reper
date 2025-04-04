@@ -192,22 +192,30 @@ def main():
             
             # Update session state with new sub-topics
             if subtopics_input:
-                st.session_state.subtopics = [st.strip() for st in subtopics_input.split("\n") if st.strip()]
+                st.session_state.subtopics = [s.strip() for s in subtopics_input.split("\n") if s.strip()]
             
-            # Button to generate new AI sub-topics
-            if st.button("Generate New AI Topics"):
-                from agents import SubTopicAgent
-                agent = SubTopicAgent()
-                generated_subtopics = agent.inference(research_topic)
-                # Parse the generated sub-topics (remove numbers and dots)
-                parsed_subtopics = [st.split(". ", 1)[1] if ". " in st else st 
-                                  for st in generated_subtopics.split("\n") 
-                                  if st.strip()]
-                # Store AI-generated sub-topics separately
-                st.session_state.ai_subtopics = parsed_subtopics
-                # Store original AI-generated topics
-                st.session_state.original_ai_subtopics = parsed_subtopics.copy()
-                st.rerun()
+            # Create columns for buttons
+            col_btn1, col_btn2 = st.columns(2)
+            
+            # Button to generate new AI sub-topics with improved styling
+            with col_btn1:
+                if st.button("✨ Generate AI Topics", help="Generate 6-7 AI research sub-topics based on your main topic"):
+                    from agents import SubTopicAgent
+                    agent = SubTopicAgent(
+                        model="gemini-2.0-flash",
+                        openai_api_key=open_ai_key,
+                        base_url=base_url
+                    )
+                    generated_subtopics = agent.inference(research_topic)
+                    # Parse the generated sub-topics (remove numbers and dots)
+                    parsed_subtopics = [s.split(". ", 1)[1] if ". " in s else s 
+                                    for s in generated_subtopics.split("\n") 
+                                    if s.strip()]
+                    # Store AI-generated sub-topics separately
+                    st.session_state.ai_subtopics = parsed_subtopics
+                    # Store original AI-generated topics
+                    st.session_state.original_ai_subtopics = parsed_subtopics.copy()
+                    st.rerun()
             
             # Display all current sub-topics
             if st.session_state.subtopics or st.session_state.ai_subtopics:
@@ -304,7 +312,26 @@ def main():
                     open_ai_key = open_ai_key.strip() or None
                     base_url = base_url.strip() or None
 
-                    # Combine user sub-topics with original AI-generated topics
+                    # Generate AI subtopics if not already generated
+                    if not st.session_state.original_ai_subtopics:
+                        with st.spinner("🤖 Generating AI research topics..."):
+                            from agents import SubTopicAgent
+                            agent = SubTopicAgent(
+                                model="gemini-2.0-flash",
+                                openai_api_key=open_ai_key,
+                                base_url=base_url
+                            )
+                            generated_subtopics = agent.inference(research_topic)
+                            # Parse the generated sub-topics (remove numbers and dots)
+                            parsed_subtopics = [st.split(". ", 1)[1] if ". " in st else st 
+                                            for st in generated_subtopics.split("\n") 
+                                            if st.strip()]
+                            # Store AI-generated sub-topics
+                            st.session_state.ai_subtopics = parsed_subtopics
+                            # Store original AI-generated topics
+                            st.session_state.original_ai_subtopics = parsed_subtopics.copy()
+                    
+                    # Combine user sub-topics with AI-generated topics
                     all_subtopics = list(set(st.session_state.subtopics + st.session_state.original_ai_subtopics))
 
                     # Run the literature review step with adjusted max_value
@@ -323,6 +350,23 @@ def main():
                     return
                 
                 st.success("Literature review completed!")
+
+                # Display a message about the search process
+                st.markdown("""
+                    <div style="background-color: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
+                        <h4 style="color: #2c3e50; margin-bottom: 10px;">Search Process</h4>
+                        <p style="color: #388e3c;">The literature review searched for papers using:</p>
+                        <ul style="color: #388e3c;">
+                            <li>Your main research topic: <strong>{}</strong></li>
+                            <li>Combined with {} research sub-topics ({} user-provided, {} AI-generated)</li>
+                        </ul>
+                    </div>
+                """.format(
+                    research_topic,
+                    len(st.session_state.subtopics) + len(st.session_state.original_ai_subtopics),
+                    len(st.session_state.subtopics),
+                    len(st.session_state.original_ai_subtopics)
+                ), unsafe_allow_html=True)
 
                 # Store checkbox states in session state
                 st.session_state["generate_report_flag"] = generate_report_flag
@@ -392,6 +436,47 @@ def main():
                 <p style='color: #7f8c8d;'>Detailed information about collected papers</p>
             </div>
         """, unsafe_allow_html=True)
+
+        # Display the subtopics used in the search
+        if st.session_state.get("results_generated", False):
+            st.markdown("""
+                <div class="subtopic-section">
+                    <h4 style="color: #2c3e50; margin-bottom: 15px;">Research Topics Used</h4>
+                    <p class="info-text">The following research topics were used for the literature review:</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            # Show AI-generated topics
+            if st.session_state.original_ai_subtopics:
+                st.markdown("""
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #388e3c; margin-bottom: 10px;">AI-Generated Research Topics</h5>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                for i, subtopic in enumerate(st.session_state.original_ai_subtopics, 1):
+                    st.markdown(f"""
+                        <div class="ai-subtopic">
+                            <span style="font-weight: 600; color: #388e3c">{i}.</span> {subtopic}
+                        </div>
+                    """, unsafe_allow_html=True)
+            
+            # Show user-entered topics
+            if st.session_state.subtopics:
+                st.markdown("""
+                    <div style="margin-top: 20px; margin-bottom: 20px;">
+                        <h5 style="color: #1976d2; margin-bottom: 10px;">Your Added Research Topics</h5>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                for i, subtopic in enumerate(st.session_state.subtopics, 1):
+                    st.markdown(f"""
+                        <div class="user-subtopic">
+                            <span style="font-weight: 600; color: #1976d2">{i}.</span> {subtopic}
+                        </div>
+                    """, unsafe_allow_html=True)
+            
+            st.markdown("<br>", unsafe_allow_html=True)
 
         data_file = os.path.join("database", "literature_data.json")
         if os.path.exists(data_file):

@@ -1,10 +1,46 @@
 {
   "metadata": {
     "research_topic": "scenario generation for autonomous driving ",
-    "generated_at": "2025-04-04T16:33:04.849208",
+    "generated_at": "2025-04-04T16:48:34.197521",
     "source": "arXiv"
   },
   "sub_topics": {
+    " Criticality measures for scenarios": [
+      {
+        "title": "Assessing the Criticality of Longitudinal Driving Scenarios using Time Series Data",
+        "arxiv_id": "2305.20071v1",
+        "published": "2023-05-29",
+        "summary": "Unfortunately, many people die in car accidents. To reduce these accidents,\ncars are equipped with driving safety systems. With autonomous vehicles, the\ndriver's behavior becomes irrelevant as the car drives autonomously. All\nautonomous driving algorithms must undergo extensive testing and validation,\nespecially for safety-critical scenarios. Therefore, the detection of\nsafety-critical driving scenarios is essential for autonomous vehicles. This\npublication describes safety indicator metrics based on time series covering\nlongitudinal driving data to detect safety-critical driving scenarios.\nLink: http://arxiv.org/abs/2305.20071v1",
+        "link": "http://arxiv.org/abs/2305.20071v1"
+      }
+    ],
+    " Validation of generated scenarios": [
+      {
+        "title": "Assessing the Criticality of Longitudinal Driving Scenarios using Time Series Data",
+        "arxiv_id": "2305.20071v1",
+        "published": "2023-05-29",
+        "summary": "Unfortunately, many people die in car accidents. To reduce these accidents,\ncars are equipped with driving safety systems. With autonomous vehicles, the\ndriver's behavior becomes irrelevant as the car drives autonomously. All\nautonomous driving algorithms must undergo extensive testing and validation,\nespecially for safety-critical scenarios. Therefore, the detection of\nsafety-critical driving scenarios is essential for autonomous vehicles. This\npublication describes safety indicator metrics based on time series covering\nlongitudinal driving data to detect safety-critical driving scenarios.\nLink: http://arxiv.org/abs/2305.20071v1",
+        "link": "http://arxiv.org/abs/2305.20071v1"
+      }
+    ],
+    " Scenario diversity and coverage": [
+      {
+        "title": "PLT-D3: A High-fidelity Dynamic Driving Simulation Dataset for Stereo Depth and Scene Flow",
+        "arxiv_id": "2406.07667v1",
+        "published": "2024-06-11",
+        "summary": "Autonomous driving has experienced remarkable progress, bolstered by\ninnovations in computational hardware and sophisticated deep learning\nmethodologies. The foundation of these advancements rests on the availability\nand quality of datasets, which are crucial for the development and refinement\nof dependable and versatile autonomous driving algorithms. While numerous\ndatasets have been developed to support the evolution of autonomous driving\nperception technologies, few offer the diversity required to thoroughly test\nand enhance system robustness under varied weather conditions. Many public\ndatasets lack the comprehensive coverage of challenging weather scenarios and\ndetailed, high-resolution data, which are critical for training and validating\nadvanced autonomous-driving perception models. In this paper, we introduce\nPLT-D3; a Dynamic-weather Driving Dataset, designed specifically to enhance\nautonomous driving systems' adaptability to diverse weather conditions. PLT-D3\nprovides high-fidelity stereo depth and scene flow ground truth data generated\nusing Unreal Engine 5. In particular, this dataset includes synchronized\nhigh-resolution stereo image sequences that replicate a wide array of dynamic\nweather scenarios including rain, snow, fog, and diverse lighting conditions,\noffering an unprecedented level of realism in simulation-based testing. The\nprimary aim of PLT-D3 is to address the scarcity of comprehensive training and\ntesting resources that can simulate real-world weather variations. Benchmarks\nhave been established for several critical autonomous driving tasks using\nPLT-D3, such as depth estimation, optical flow and scene-flow to measure and\nenhance the performance of state-of-the-art models.\nLink: http://arxiv.org/abs/2406.07667v1",
+        "link": "http://arxiv.org/abs/2406.07667v1"
+      }
+    ],
+    " Generative adversarial networks (GANs)": [
+      {
+        "title": "SUSTechGAN: Image Generation for Object Detection in Adverse Conditions of Autonomous Driving",
+        "arxiv_id": "2408.01430v2",
+        "published": "2024-07-18",
+        "summary": "Autonomous driving significantly benefits from data-driven deep neural\nnetworks. However, the data in autonomous driving typically fits the\nlong-tailed distribution, in which the critical driving data in adverse\nconditions is hard to collect. Although generative adversarial networks (GANs)\nhave been applied to augment data for autonomous driving, generating driving\nimages in adverse conditions is still challenging. In this work, we propose a\nnovel framework, SUSTechGAN, with customized dual attention modules,\nmulti-scale generators, and a novel loss function to generate driving images\nfor improving object detection of autonomous driving in adverse conditions. We\ntest the SUSTechGAN and the well-known GANs to generate driving images in\nadverse conditions of rain and night and apply the generated images to retrain\nobject detection networks. Specifically, we add generated images into the\ntraining datasets to retrain the well-known YOLOv5 and evaluate the improvement\nof the retrained YOLOv5 for object detection in adverse conditions. The\nexperimental results show that the generated driving images by our SUSTechGAN\nsignificantly improved the performance of retrained YOLOv5 in rain and night\nconditions, which outperforms the well-known GANs. The open-source code, video\ndescription and datasets are available on the page 1 to facilitate image\ngeneration development in autonomous driving under adverse conditions.\nLink: http://arxiv.org/abs/2408.01430v2",
+        "link": "http://arxiv.org/abs/2408.01430v2"
+      }
+    ],
     "RL": [
       {
         "title": "A Reinforcement Learning Benchmark for Autonomous Driving in Intersection Scenarios",
@@ -12,42 +48,26 @@
         "published": "2021-09-22",
         "summary": "In recent years, control under urban intersection scenarios becomes an\nemerging research topic. In such scenarios, the autonomous vehicle confronts\ncomplicated situations since it must deal with the interaction with social\nvehicles timely while obeying the traffic rules. Generally, the autonomous\nvehicle is supposed to avoid collisions while pursuing better efficiency. The\nexisting work fails to provide a framework that emphasizes the integrity of the\nscenarios while being able to deploy and test reinforcement learning(RL)\nmethods. Specifically, we propose a benchmark for training and testing RL-based\nautonomous driving agents in complex intersection scenarios, which is called\nRL-CIS. Then, a set of baselines are deployed consists of various algorithms.\nThe test benchmark and baselines are to provide a fair and comprehensive\ntraining and testing platform for the study of RL for autonomous driving in the\nintersection scenario, advancing the progress of RL-based methods for\nintersection autonomous driving control. The code of our proposed framework can\nbe found at https://github.com/liuyuqi123/ComplexUrbanScenarios.\nLink: http://arxiv.org/abs/2109.10557v1",
         "link": "http://arxiv.org/abs/2109.10557v1"
-      },
-      {
-        "title": "Offline Reinforcement Learning for Autonomous Driving with Safety and Exploration Enhancement",
-        "arxiv_id": "2110.07067v2",
-        "published": "2021-10-13",
-        "summary": "Reinforcement learning (RL) is a powerful data-driven control method that has\nbeen largely explored in autonomous driving tasks. However, conventional RL\napproaches learn control policies through trial-and-error interactions with the\nenvironment and therefore may cause disastrous consequences such as collisions\nwhen testing in real-world traffic. Offline RL has recently emerged as a\npromising framework to learn effective policies from previously-collected,\nstatic datasets without the requirement of active interactions, making it\nespecially appealing for autonomous driving applications. Despite promising,\nexisting offline RL algorithms such as Batch-Constrained deep Q-learning (BCQ)\ngenerally lead to rather conservative policies with limited exploration\nefficiency. To address such issues, this paper presents an enhanced BCQ\nalgorithm by employing a learnable parameter noise scheme in the perturbation\nmodel to increase the diversity of observed actions. In addition, a\nLyapunov-based safety enhancement strategy is incorporated to constrain the\nexplorable state space within a safe region. Experimental results in highway\nand parking traffic scenarios show that our approach outperforms the\nconventional RL method, as well as state-of-the-art offline RL algorithms.\nLink: http://arxiv.org/abs/2110.07067v2",
-        "link": "http://arxiv.org/abs/2110.07067v2"
-      },
-      {
-        "title": "VLM-RL: A Unified Vision Language Models and Reinforcement Learning Framework for Safe Autonomous Driving",
-        "arxiv_id": "2412.15544v1",
-        "published": "2024-12-20",
-        "summary": "In recent years, reinforcement learning (RL)-based methods for learning\ndriving policies have gained increasing attention in the autonomous driving\ncommunity and have achieved remarkable progress in various driving scenarios.\nHowever, traditional RL approaches rely on manually engineered rewards, which\nrequire extensive human effort and often lack generalizability. To address\nthese limitations, we propose \\textbf{VLM-RL}, a unified framework that\nintegrates pre-trained Vision-Language Models (VLMs) with RL to generate reward\nsignals using image observation and natural language goals. The core of VLM-RL\nis the contrasting language goal (CLG)-as-reward paradigm, which uses positive\nand negative language goals to generate semantic rewards. We further introduce\na hierarchical reward synthesis approach that combines CLG-based semantic\nrewards with vehicle state information, improving reward stability and offering\na more comprehensive reward signal. Additionally, a batch-processing technique\nis employed to optimize computational efficiency during training. Extensive\nexperiments in the CARLA simulator demonstrate that VLM-RL outperforms\nstate-of-the-art baselines, achieving a 10.5\\% reduction in collision rate, a\n104.6\\% increase in route completion rate, and robust generalization to unseen\ndriving scenarios. Furthermore, VLM-RL can seamlessly integrate almost any\nstandard RL algorithms, potentially revolutionizing the existing RL paradigm\nthat relies on manual reward engineering and enabling continuous performance\nimprovements. The demo video and code can be accessed at:\nhttps://zilin-huang.github.io/VLM-RL-website.\nLink: http://arxiv.org/abs/2412.15544v1",
-        "link": "http://arxiv.org/abs/2412.15544v1"
-      },
-      {
-        "title": "Investigating Value of Curriculum Reinforcement Learning in Autonomous Driving Under Diverse Road and Weather Conditions",
-        "arxiv_id": "2103.07903v3",
-        "published": "2021-03-14",
-        "summary": "Applications of reinforcement learning (RL) are popular in autonomous driving\ntasks. That being said, tuning the performance of an RL agent and guaranteeing\nthe generalization performance across variety of different driving scenarios is\nstill largely an open problem. In particular, getting good performance on\ncomplex road and weather conditions require exhaustive tuning and computation\ntime. Curriculum RL, which focuses on solving simpler automation tasks in order\nto transfer knowledge to complex tasks, is attracting attention in RL\ncommunity. The main contribution of this paper is a systematic study for\ninvestigating the value of curriculum reinforcement learning in autonomous\ndriving applications. For this purpose, we setup several different driving\nscenarios in a realistic driving simulator, with varying road complexity and\nweather conditions. Next, we train and evaluate performance of RL agents on\ndifferent sequences of task combinations and curricula. Results show that\ncurriculum RL can yield significant gains in complex driving tasks, both in\nterms of driving performance and sample complexity. Results also demonstrate\nthat different curricula might enable different benefits, which hints future\nresearch directions for automated curriculum training.\nLink: http://arxiv.org/abs/2103.07903v3",
-        "link": "http://arxiv.org/abs/2103.07903v3"
-      },
-      {
-        "title": "Act Better by Timing: A timing-Aware Reinforcement Learning for Autonomous Driving",
-        "arxiv_id": "2406.13223v2",
-        "published": "2024-06-19",
-        "summary": "Autonomous vehicles inevitably encounter a vast array of scenarios in\nreal-world environments. Addressing long-tail scenarios, particularly those\ninvolving intensive interactions with numerous traffic participants, remains\none of the most significant challenges in achieving high-level autonomous\ndriving. Reinforcement learning (RL) offers a promising solution for such\nscenarios and allows autonomous vehicles to continuously self-evolve during\ninteractions. However, traditional RL often requires trial and error from\nscratch in new scenarios, resulting in inefficient exploration of unknown\nstates. Integrating RL with planning-based methods can significantly accelerate\nthe learning process. Additionally, conventional RL methods lack robust safety\nmechanisms, making agents prone to collisions in dynamic environments in\npursuit of short-term rewards. Many existing safe RL methods depend on\nenvironment modeling to identify reliable safety boundaries for constraining\nagent behavior. However, explicit environmental models can fail to capture the\ncomplexity of dynamic environments comprehensively. Inspired by the observation\nthat human drivers rarely take risks in uncertain situations, this study\nintroduces the concept of action timing and proposes a timing-aware RL method,\nIn this approach, a \"timing imagination\" process previews the execution results\nof the agent's strategies at different time scales. The optimal execution\ntiming is then projected to each decision moment, generating a dynamic safety\nfactor to constrain actions. A planning-based method serves as a conservative\nbaseline strategy in uncertain states. In two representative interaction\nscenarios, an unsignalized intersection and a roundabout, the proposed model\noutperforms the benchmark models in driving safety.\nLink: http://arxiv.org/abs/2406.13223v2",
-        "link": "http://arxiv.org/abs/2406.13223v2"
-      },
-      {
-        "title": "CarPlanner: Consistent Auto-regressive Trajectory Planning for Large-scale Reinforcement Learning in Autonomous Driving",
-        "arxiv_id": "2502.19908v3",
-        "published": "2025-02-27",
-        "summary": "Trajectory planning is vital for autonomous driving, ensuring safe and\nefficient navigation in complex environments. While recent learning-based\nmethods, particularly reinforcement learning (RL), have shown promise in\nspecific scenarios, RL planners struggle with training inefficiencies and\nmanaging large-scale, real-world driving scenarios. In this paper, we introduce\n\\textbf{CarPlanner}, a \\textbf{C}onsistent \\textbf{a}uto-\\textbf{r}egressive\n\\textbf{Planner} that uses RL to generate multi-modal trajectories. The\nauto-regressive structure enables efficient large-scale RL training, while the\nincorporation of consistency ensures stable policy learning by maintaining\ncoherent temporal consistency across time steps. Moreover, CarPlanner employs a\ngeneration-selection framework with an expert-guided reward function and an\ninvariant-view module, simplifying RL training and enhancing policy\nperformance. Extensive analysis demonstrates that our proposed RL framework\neffectively addresses the challenges of training efficiency and performance\nenhancement, positioning CarPlanner as a promising solution for trajectory\nplanning in autonomous driving. To the best of our knowledge, we are the first\nto demonstrate that the RL-based planner can surpass both IL- and rule-based\nstate-of-the-arts (SOTAs) on the challenging large-scale real-world dataset\nnuPlan. Our proposed CarPlanner surpasses RL-, IL-, and rule-based SOTA\napproaches within this demanding dataset.\nLink: http://arxiv.org/abs/2502.19908v3",
-        "link": "http://arxiv.org/abs/2502.19908v3"
       }
-    ]
+    ],
+    " Data-driven scenario extraction": [
+      {
+        "title": "LeGEND: A Top-Down Approach to Scenario Generation of Autonomous Driving Systems Assisted by Large Language Models",
+        "arxiv_id": "2409.10066v1",
+        "published": "2024-09-16",
+        "summary": "Autonomous driving systems (ADS) are safety-critical and require\ncomprehensive testing before their deployment on public roads. While existing\ntesting approaches primarily aim at the criticality of scenarios, they often\noverlook the diversity of the generated scenarios that is also important to\nreflect system defects in different aspects. To bridge the gap, we propose\nLeGEND, that features a top-down fashion of scenario generation: it starts with\nabstract functional scenarios, and then steps downwards to logical and concrete\nscenarios, such that scenario diversity can be controlled at the functional\nlevel. However, unlike logical scenarios that can be formally described,\nfunctional scenarios are often documented in natural languages (e.g., accident\nreports) and thus cannot be precisely parsed and processed by computers. To\ntackle that issue, LeGEND leverages the recent advances of large language\nmodels (LLMs) to transform textual functional scenarios to formal logical\nscenarios. To mitigate the distraction of useless information in functional\nscenario description, we devise a two-phase transformation that features the\nuse of an intermediate language; consequently, we adopt two LLMs in LeGEND, one\nfor extracting information from functional scenarios, the other for converting\nthe extracted information to formal logical scenarios. We experimentally\nevaluate LeGEND on Apollo, an industry-grade ADS from Baidu. Evaluation results\nshow that LeGEND can effectively identify critical scenarios, and compared to\nbaseline approaches, LeGEND exhibits evident superiority in diversity of\ngenerated scenarios. Moreover, we also demonstrate the advantages of our\ntwo-phase transformation framework, and the accuracy of the adopted LLMs.\nLink: http://arxiv.org/abs/2409.10066v1",
+        "link": "http://arxiv.org/abs/2409.10066v1"
+      }
+    ],
+    " Rule-based scenario generation": [
+      {
+        "title": "A Scenario-Based Development Framework for Autonomous Driving",
+        "arxiv_id": "2011.01439v2",
+        "published": "2020-11-03",
+        "summary": "This article summarizes the research progress of scenario-based testing and\ndevelopment technology for autonomous vehicles. We systematically analyzed\nprevious research works and proposed the definition of scenario, the elements\nof the scenario ontology, the data source of the scenario, the processing\nmethod of the scenario data, and scenario-based V-Model. Moreover, we\nsummarized the automated test scenario construction method by random scenario\ngeneration and dangerous scenario generation.\nLink: http://arxiv.org/abs/2011.01439v2",
+        "link": "http://arxiv.org/abs/2011.01439v2"
+      }
+    ],
+    "Here are 6 sub-topics for a literature review on scenario generation for autonomous driving:": []
   }
 }

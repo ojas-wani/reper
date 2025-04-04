@@ -71,6 +71,9 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
         if user_subtopics:
             print("Using user-provided sub-topics...")
             sub_topics = user_subtopics
+            print(f"Using {len(sub_topics)} sub-topics: {len([s for s in sub_topics if s in user_subtopics])} user-provided and {len([s for s in sub_topics if s not in user_subtopics])} AI-generated")
+            print(f"User-provided sub-topics: {[s for s in sub_topics if s in user_subtopics]}")
+            print(f"AI-generated sub-topics: {[s for s in sub_topics if s not in user_subtopics]}")
         else:
             print("Generating sub-topics...")
             sub_agent = SubTopicAgent(
@@ -101,11 +104,9 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
 
     arxiv_engine = ArxivSearch()
 
-    # 3) For each sub-topic, collect up to papers_per_subtopic
-    for idx, st in enumerate(sub_topics, 1):
-        print(f"Processing sub-topic {idx}/{sub_topic_count}: {st}")
-        report["sub_topics"][st] = []
-
+    # 3) For each sub-topic, fetch papers
+    for st in sub_topics:
+        print(f"\nSearching for papers on: {st}")
         try:
             # Combine research topic with sub-topic for more focused search
             combined_query = f"{research_topic} {st}"
@@ -117,24 +118,24 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
                 N=50  # Increased from 100 to ensure we get enough papers per sub-topic
             )
             papers = raw_papers.split("\n\n")
-            print(f"  Found {len(papers)} papers (post date-filter).")
+            papers = [p for p in papers if p.strip()]
+            print(f"  Found {len(papers)} raw papers for '{st}'")
+
+            # Extract metadata from each paper
+            paper_metadata = []
+            for paper in papers:
+                metadata = extract_paper_metadata(paper)
+                if metadata:
+                    paper_metadata.append(metadata)
+
+            # Limit to papers_per_subtopic
+            paper_metadata = paper_metadata[:papers_per_subtopic]
+            report["sub_topics"][st] = paper_metadata
+
+            print(f"  Found {len(paper_metadata)} papers for '{st}'")
         except Exception as e:
-            print(f"  Paper search failed for sub-topic '{st}': {e}")
-            continue
-
-        # Now parse and collect up to papers_per_subtopic
-        collected = 0
-        for paper_str in papers:
-            if collected >= papers_per_subtopic:
-                break
-
-            paper_data = extract_paper_metadata(paper_str)
-            if paper_data:
-                report["sub_topics"][st].append(paper_data)
-                collected += 1
-                print(f"    Added paper {collected}: {paper_data['title']}")
-            else:
-                print("    Did not find any paper in between the dates")
+            print(f"  Error searching for '{st}': {e}")
+            report["sub_topics"][st] = []
 
     # 4) Save final JSON
     try:
