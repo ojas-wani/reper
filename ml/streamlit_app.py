@@ -12,9 +12,16 @@ import torch
 # Set page config must be the first Streamlit command
 st.set_page_config(page_title="Research Literature Review", layout="wide")
 
-# Load custom CSS
-with open("static/styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# Load custom CSS using absolute path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(os.path.dirname(current_dir), "static")
+css_path = os.path.join(static_dir, "styles.css")
+
+if os.path.exists(css_path):
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+else:
+    st.warning("CSS file not found. Some styling may be missing.")
 
 torch.classes.__path__ = []
 
