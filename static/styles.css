@@ -1,0 +1,48 @@
+.main {
+    background-color: #f8f9fa;
+}
+
+.stButton>button {
+    width: 100%;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.stButton>button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.stTextInput>div>div>input {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.stNumberInput>div>div>input {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.stCheckbox>div>div>div {
+    border-radius: 5px;
+}
+
+.paper-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.section-header {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 20px;
+} 
