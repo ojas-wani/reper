@@ -136,6 +136,8 @@ def main():
         st.session_state["generate_novel_approach_flag"] = True
     if "download_status" not in st.session_state:
         st.session_state["download_status"] = {}
+    if "auto_download_complete" not in st.session_state:
+        st.session_state["auto_download_complete"] = False
     
     # Ensure PDF folder exists
     pdf_folder = ensure_pdf_folder()
@@ -486,6 +488,63 @@ def main():
                     data = json.load(f)
                 
                 if "sub_topics" in data:
+                    # Auto-download all papers if not already done
+                    if not st.session_state["auto_download_complete"]:
+                        with st.spinner("📥 Automatically downloading all papers..."):
+                            total_papers = 0
+                            downloaded_count = 0
+                            skipped_count = 0
+                            error_count = 0
+                            
+                            # First count total papers
+                            for sub_topic, papers in data["sub_topics"].items():
+                                for paper in papers:
+                                    total_papers += 1
+                            
+                            # Create progress bar
+                            progress_bar = st.progress(0)
+                            status_text = st.empty()
+                            
+                            # Download all papers
+                            for sub_topic, papers in data["sub_topics"].items():
+                                for paper in papers:
+                                    # Extract arXiv ID from the link
+                                    arxiv_id = None
+                                    if "link" in paper and "arxiv.org" in paper["link"]:
+                                        parts = paper["link"].split("/")
+                                        if len(parts) > 0:
+                                            arxiv_id = parts[-1]
+                                    
+                                    if arxiv_id:
+                                        # Create a unique key for this paper
+                                        paper_key = f"{sub_topic}_{paper.get('title', '')}"
+                                        
+                                        # Download the paper
+                                        filepath, status = download_pdf(
+                                            arxiv_id, 
+                                            paper.get('title', 'Untitled'), 
+                                            pdf_folder
+                                        )
+                                        
+                                        # Update status
+                                        if "successfully" in status:
+                                            downloaded_count += 1
+                                        elif "already exists" in status:
+                                            skipped_count += 1
+                                        else:
+                                            error_count += 1
+                                        
+                                        # Update progress
+                                        progress = (downloaded_count + skipped_count + error_count) / total_papers
+                                        progress_bar.progress(progress)
+                                        status_text.text(f"Downloaded: {downloaded_count}, Skipped: {skipped_count}, Errors: {error_count}")
+                            
+                            # Mark auto-download as complete
+                            st.session_state["auto_download_complete"] = True
+                            
+                            # Show completion message
+                            st.success(f"✅ Auto-download complete! Downloaded {downloaded_count} papers, skipped {skipped_count} (already exist), and encountered {error_count} errors.")
+                    
                     # Calculate number of subtopics to show
                     num_subtopics = len(data["sub_topics"])
                     subtopics = list(data["sub_topics"].items())[:num_subtopics]
@@ -524,8 +583,24 @@ def main():
                             
                             # Add download button if we have an arXiv ID
                             if arxiv_id:
-                                col1, col2 = st.columns([5, 1])
-                                with col2:
+                                # Check if file exists
+                                clean_title = "".join(c if c.isalnum() or c in [' ', '-', '_'] else '_' for c in paper.get('title', 'Untitled'))
+                                clean_title = clean_title[:100]  # Limit filename length
+                                filename = f"{arxiv_id}_{clean_title}.pdf"
+                                filepath = os.path.join(pdf_folder, filename)
+                                
+                                if os.path.exists(filepath):
+                                    # Provide a download button for the existing file
+                                    with open(filepath, "rb") as file:
+                                        st.download_button(
+                                            label="📄 Open PDF",
+                                            data=file,
+                                            file_name=filename,
+                                            mime="application/pdf",
+                                            key=f"open_{paper_key}"
+                                        )
+                                else:
+                                    # Provide a download button to download the file
                                     if st.button(f"📥 Download PDF", key=f"download_{paper_key}"):
                                         with st.spinner("Downloading..."):
                                             filepath, status = download_pdf(
