@@ -13,7 +13,6 @@ import torch
 st.set_page_config(
     page_title="Research Literature Review",
     layout="wide",
-    # Add these configurations for static files
     initial_sidebar_state="expanded",
     menu_items={
         'Get Help': 'https://docs.streamlit.io',
@@ -21,11 +20,6 @@ st.set_page_config(
         'About': '# This is a research literature review app'
     }
 )
-
-# Configure Streamlit for production
-st.set_option('server.enableCORS', True)
-st.set_option('server.enableXsrfProtection', True)
-st.set_option('server.enableStaticServing', True)
 
 # Load custom CSS using absolute path
 current_dir = os.path.dirname(os.path.abspath(__file__))
