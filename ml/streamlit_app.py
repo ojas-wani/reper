@@ -173,31 +173,31 @@ def main():
             st.success("Literature review completed!")
 
                 # Conditionally generate the literature report
-                if generate_report_flag:
-                    with st.spinner("Generating literature report..."):
-                        generate_report.generate_literature_report(
-                            open_ai_key=open_ai_key,
-                            base_url=base_url
-                        )
-                    st.success("Literature report generated!")
-                else:
-                    st.info("Skipped literature report generation.")
+            if generate_report_flag:
+                with st.spinner("Generating literature report..."):
+                    generate_report.generate_literature_report(
+                        open_ai_key=open_ai_key,
+                        base_url=base_url
+                    )
+                st.success("Literature report generated!")
+            else:
+                st.info("Skipped literature report generation.")
 
-                # Conditionally generate the novel research approach
-                if generate_novel_approach_flag:
-                    with st.spinner("Generating novel research approach..."):
-                        novel_ideas.propose_novel_approach_and_save(
-                            open_ai_key=open_ai_key,
-                            base_url=base_url
-                        )
-                    st.success("Novel research approach generated!")
-                else:
-                    st.info("Skipped novel research approach generation.")
+            # Conditionally generate the novel research approach
+            if generate_novel_approach_flag:
+                with st.spinner("Generating novel research approach..."):
+                    novel_ideas.propose_novel_approach_and_save(
+                        open_ai_key=open_ai_key,
+                        base_url=base_url
+                    )
+                st.success("Novel research approach generated!")
+            else:
+                st.info("Skipped novel research approach generation.")
 
-                # Load generated files into session state for persistent download links.
-                st.session_state["result_files"] = load_result_files()
-                # Set flag to show results
-                st.session_state["results_generated"] = True
+            # Load generated files into session state for persistent download links.
+            st.session_state["result_files"] = load_result_files()
+            # Set flag to show results
+            st.session_state["results_generated"] = True
 
         # Only show results if they have been generated
         if st.session_state.get("results_generated", False):
