@@ -120,7 +120,7 @@ def main():
             "Max Papers",
             min_value=6,
             max_value=100,
-            value=20,
+            value=18,
             step=1,
             help="Maximum number of papers to collect for your research topic."
         )
@@ -128,7 +128,7 @@ def main():
             "Start Year",
             min_value=1900,
             max_value=2025,
-            value=2020,
+            value=2005,
             step=1,
             help="Starting year for paper collection."
         )
