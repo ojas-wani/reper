@@ -3,10 +3,12 @@ import os
 import json
 import base64
 import shutil
+import requests
 from literature_review import perform_literature_review
 import generate_report
 import novel_ideas
 import torch
+from pathlib import Path
 
 # Set page config must be the first Streamlit command
 st.set_page_config(page_title="Research Literature Review", layout="wide")
@@ -87,6 +89,41 @@ def clear_database_folder(db_folder="database"):
                 st.error(f"Error deleting {file_name}: {e}")
 
 
+# Create a folder for downloaded PDFs if it doesn't exist
+def ensure_pdf_folder():
+    pdf_folder = "downloaded_papers"
+    if not os.path.exists(pdf_folder):
+        os.makedirs(pdf_folder)
+    return pdf_folder
+
+# Function to download a PDF from arXiv
+def download_pdf(arxiv_id, title, pdf_folder):
+    try:
+        # Clean the title to create a valid filename
+        clean_title = "".join(c if c.isalnum() or c in [' ', '-', '_'] else '_' for c in title)
+        clean_title = clean_title[:100]  # Limit filename length
+        filename = f"{arxiv_id}_{clean_title}.pdf"
+        filepath = os.path.join(pdf_folder, filename)
+        
+        # Check if file already exists
+        if os.path.exists(filepath):
+            return filepath, "File already exists"
+        
+        # Download the PDF
+        pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
+        response = requests.get(pdf_url, stream=True)
+        
+        if response.status_code == 200:
+            with open(filepath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            return filepath, "Downloaded successfully"
+        else:
+            return None, f"Failed to download: HTTP {response.status_code}"
+    except Exception as e:
+        return None, f"Error downloading PDF: {str(e)}"
+
+
 def main():
     # Initialize session state for result files and results_generated flag if not already present.
     if "result_files" not in st.session_state:
@@ -97,7 +134,12 @@ def main():
         st.session_state["generate_report_flag"] = True
     if "generate_novel_approach_flag" not in st.session_state:
         st.session_state["generate_novel_approach_flag"] = True
-
+    if "download_status" not in st.session_state:
+        st.session_state["download_status"] = {}
+    
+    # Ensure PDF folder exists
+    pdf_folder = ensure_pdf_folder()
+    
     # Top: Display Logo using SVG
     logo_svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80">
@@ -442,14 +484,8 @@ def main():
             try:
                 with open(data_file, "r", encoding="utf-8", errors="replace") as f:
                     data = json.load(f)
-                # Debug information
-                # st.write("Debug - Data loaded successfully")
-                # st.write("Debug - Data structure:", data.keys())
                 
                 if "sub_topics" in data:
-                    # Debug information
-                    # st.write("Debug - Number of subtopics:", len(data["sub_topics"]))
-                    
                     # Calculate number of subtopics to show
                     num_subtopics = len(data["sub_topics"])
                     subtopics = list(data["sub_topics"].items())[:num_subtopics]
@@ -460,15 +496,23 @@ def main():
                         if total_papers >= max_value:
                             break
                         st.markdown(f"### {sub_topic}")
-                        # Debug information
-                        # st.write(f"Debug - Papers in {sub_topic}:", len(papers))
                         
                         for paper in papers:
                             if total_papers >= max_value:
                                 break
-                            # Debug information
-                            # st.write("Debug - Paper data:", paper)
                             
+                            # Extract arXiv ID from the link
+                            arxiv_id = None
+                            if "link" in paper and "arxiv.org" in paper["link"]:
+                                # Extract ID from URL like https://arxiv.org/abs/2403.12345
+                                parts = paper["link"].split("/")
+                                if len(parts) > 0:
+                                    arxiv_id = parts[-1]
+                            
+                            # Create a unique key for this paper
+                            paper_key = f"{sub_topic}_{paper.get('title', '')}"
+                            
+                            # Display paper information
                             st.markdown(f"""
                                 <div class='paper-card'>
                                     <h4 style='color: #2c3e50; margin-bottom: 10px;'>{paper.get('title', 'N/A')}</h4>
@@ -477,6 +521,41 @@ def main():
                                     <a href='{paper.get('link', '#')}' target='_blank' style='color: #4CAF50; text-decoration: none;'>🔗 View Paper</a>
                                 </div>
                             """, unsafe_allow_html=True)
+                            
+                            # Add download button if we have an arXiv ID
+                            if arxiv_id:
+                                col1, col2 = st.columns([5, 1])
+                                with col2:
+                                    if st.button(f"📥 Download PDF", key=f"download_{paper_key}"):
+                                        with st.spinner("Downloading..."):
+                                            filepath, status = download_pdf(
+                                                arxiv_id, 
+                                                paper.get('title', 'Untitled'), 
+                                                pdf_folder
+                                            )
+                                            st.session_state["download_status"][paper_key] = status
+                                            
+                                            if filepath:
+                                                # Provide a download button for the local file
+                                                with open(filepath, "rb") as file:
+                                                    st.download_button(
+                                                        label="Open PDF",
+                                                        data=file,
+                                                        file_name=os.path.basename(filepath),
+                                                        mime="application/pdf",
+                                                        key=f"open_{paper_key}"
+                                                    )
+                                
+                                # Show download status if available
+                                if paper_key in st.session_state["download_status"]:
+                                    status = st.session_state["download_status"][paper_key]
+                                    if "successfully" in status:
+                                        st.success(status)
+                                    elif "already exists" in status:
+                                        st.info(status)
+                                    else:
+                                        st.error(status)
+                            
                             total_papers += 1
                 else:
                     st.warning("No papers info found in literature_data.json.")
