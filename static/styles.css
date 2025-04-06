@@ -16,7 +16,7 @@
 .stButton>button:hover {
     background-color: #45a049;
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(3, 49, 1, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .stTextInput>div>div>input {
