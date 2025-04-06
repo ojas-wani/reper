@@ -1,10 +1,12 @@
-openai>
-streamlit
 arxiv
-python-dotenv
+openai
 huggingface_hub
 regex
-numpy
-sentence-transformers
+streamlit
 torch
+accelerate
+numpy
+python-dotenv
+requests
 transformers
+sentence-transformers
