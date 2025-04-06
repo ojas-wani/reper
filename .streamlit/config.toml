@@ -1,7 +1,7 @@
 [server]
 enableCORS = true
 enableXsrfProtection = true
-enableStaticServing = false
+enableStaticServing = true
 
 [browser]
 gatherUsageStats = false

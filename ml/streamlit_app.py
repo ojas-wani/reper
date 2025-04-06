@@ -29,30 +29,14 @@ css_path = os.path.join(static_dir, "styles.css")
 # Add error handling for static files
 try:
     if os.path.exists(css_path):
-        with open(css_path) as f:
+        with open(css_path, encoding='utf-8') as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     else:
         st.warning("CSS file not found. Some styling may be missing.")
 except Exception as e:
     st.warning(f"Error loading CSS: {str(e)}")
 
-# Add static file configuration
-st.markdown("""
-    <script>
-        // Add error handling for dynamic imports
-        window.addEventListener('error', function(e) {
-            if (e.target.tagName === 'SCRIPT' && e.target.src.includes('static/js')) {
-                console.warn('Failed to load script:', e.target.src);
-                // Retry loading the script
-                const script = document.createElement('script');
-                script.src = e.target.src;
-                script.async = true;
-                document.head.appendChild(script);
-            }
-        }, true);
-    </script>
-""", unsafe_allow_html=True)
-
+# Remove problematic JavaScript loading
 torch.classes.__path__ = []
 
 def load_result_files(db_folder="database"):
