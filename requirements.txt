@@ -1,10 +1,8 @@
-openai>
 streamlit
-arxiv
-python-dotenv
-huggingface_hub
-regex
-numpy
-sentence-transformers
 torch
+accelerate
+numpy
+python-dotenv
+requests
 transformers
+sentence-transformers
