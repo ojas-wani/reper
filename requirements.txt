@@ -1,3 +1,7 @@
+arxiv
+openai
+huggingface_hub
+regex
 streamlit
 torch
 accelerate
