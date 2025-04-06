@@ -1,6 +1,3 @@
-# novel_ideas.py
-
-import os
 import json
 from agents import NovelApproachAgent
 

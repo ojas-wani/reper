@@ -66,12 +66,16 @@ def main():
         st.session_state["result_files"] = {}
     if "results_generated" not in st.session_state:
         st.session_state["results_generated"] = False
+    if "generate_report_flag" not in st.session_state:
+        st.session_state["generate_report_flag"] = True
+    if "generate_novel_approach_flag" not in st.session_state:
+        st.session_state["generate_novel_approach_flag"] = True
 
     # Top: Display Logo using SVG
     logo_svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80">
       <!-- Background shape -->
-      <rect x="10" y="10" width="220" height="60" rx="12" fill="#1e1e1e" />
+      <rect x="10" y="10" width="220" height="60" rx="12" fill="#2c3e50" />
       
       <!-- Accent border -->
       <rect x="10" y="10" width="220" height="60" rx="12" fill="none" stroke="#4CAF50" stroke-width="2" />
@@ -88,7 +92,7 @@ def main():
       <line x1="185" y1="45" x2="192" y2="52" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round" />
       
       <!-- Tagline -->
-      <text x="120" y="62" font-family="Arial, sans-serif" font-size="10" fill="#9c9c9c" text-anchor="middle">Literature Review Made Simple</text>
+      <text x="120" y="62" font-family="Arial, sans-serif" font-size="10" fill="#bdc3c7" text-anchor="middle">Literature Review Made Simple</text>
     </svg>
     '''
 
@@ -97,9 +101,9 @@ def main():
         b64 = base64.b64encode(svg.encode('utf-8')).decode('utf-8')
         return f'data:image/svg+xml;base64,{b64}'
 
-    # Display logo centered
+    # Display logo centered with padding
     st.markdown(
-        f'<div style="display: flex; justify-content: center;"><img src="{svg_to_data_url(logo_svg)}" width="240px"></div>',
+        f'<div style="display: flex; justify-content: center; padding: 20px 0;"><img src="{svg_to_data_url(logo_svg)}" width="240px"></div>',
         unsafe_allow_html=True
     )
 
@@ -199,7 +203,7 @@ def main():
                 return
             st.success("Literature review completed!")
 
-            # Conditionally generate the literature report
+                # Conditionally generate the literature report
             if generate_report_flag:
                 with st.spinner("Generating literature report..."):
                     generate_report.generate_literature_report(

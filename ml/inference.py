@@ -9,7 +9,7 @@ load_dotenv()
 
 def query_model(model_str, system_prompt, prompt, temp, openai_api_key=None, base_url=None):
     client = OpenAI(
-        api_key=openai_api_key or os.getenv("OPENAI_API_KEY"),
+        api_key=openai_api_key if openai_api_key else os.getenv("OPENAI_API_KEY"),
         base_url=base_url if base_url else "https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 

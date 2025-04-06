@@ -89,10 +89,7 @@ def perform_literature_review(research_topic, start_year, end_year, max_count=50
     sub_topic_count = len(sub_topics)
     papers_per_subtopic = max_count // sub_topic_count  # integer division
     if papers_per_subtopic < 1:
-        print(
-            f"max_count ({max_count}) is too small to allocate at least 1 paper per sub-topic.")
-        print("No papers will be collected. Exiting.")
-        return None
+        papers_per_subtopic = 1
 
     print(
         f"\nWe have {sub_topic_count} sub-topics. Each sub-topic will collect up to {papers_per_subtopic} papers.\n")
