@@ -1,5 +1,3 @@
-# streamlit_app.py
-
 import streamlit as st
 import os
 import json
@@ -9,7 +7,7 @@ import generate_report
 import novel_ideas
 import torch
 
-# Set page config must be the first Streamlit command
+# Disable dynamic imports and set Streamlit configuration
 st.set_page_config(
     page_title="Research Literature Review",
     layout="wide",
@@ -20,6 +18,17 @@ st.set_page_config(
         'About': '# This is a research literature review app'
     }
 )
+
+# Disable dynamic imports
+st.markdown("""
+    <script>
+        // Disable dynamic imports
+        window.import = function() {
+            console.warn('Dynamic imports are disabled');
+            return Promise.reject(new Error('Dynamic imports are disabled'));
+        };
+    </script>
+""", unsafe_allow_html=True)
 
 # Load custom CSS using absolute path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +45,7 @@ try:
 except Exception as e:
     st.warning(f"Error loading CSS: {str(e)}")
 
-# Remove problematic JavaScript loading
+# Initialize torch
 torch.classes.__path__ = []
 
 def load_result_files(db_folder="database"):
@@ -45,7 +54,6 @@ def load_result_files(db_folder="database"):
         for file_name in os.listdir(db_folder):
             file_path = os.path.join(db_folder, file_name)
             try:
-                # Use errors="replace" to handle decoding issues.
                 with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                     result_files[file_name] = f.read()
             except Exception as e:
