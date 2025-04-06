@@ -7,13 +7,45 @@ import generate_report
 import novel_ideas
 import torch
 
-# Set page config must be the first Streamlit command
-st.set_page_config(page_title="Research Literature Review", layout="wide")
+# Disable dynamic imports and set Streamlit configuration
+st.set_page_config(
+    page_title="Research Literature Review",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://docs.streamlit.io',
+        'Report a bug': 'https://github.com/streamlit/streamlit/issues',
+        'About': '# This is a research literature review app'
+    }
+)
 
-# Load custom CSS
-with open("static/styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# Disable dynamic imports
+st.markdown("""
+    <script>
+        // Disable dynamic imports
+        window.import = function() {
+            console.warn('Dynamic imports are disabled');
+            return Promise.reject(new Error('Dynamic imports are disabled'));
+        };
+    </script>
+""", unsafe_allow_html=True)
 
+# Load custom CSS using absolute path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(os.path.dirname(current_dir), "static")
+css_path = os.path.join(static_dir, "styles.css")
+
+# Add error handling for static files
+try:
+    if os.path.exists(css_path):
+        with open(css_path, encoding='utf-8') as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.warning("CSS file not found. Some styling may be missing.")
+except Exception as e:
+    st.warning(f"Error loading CSS: {str(e)}")
+
+# Initialize torch
 torch.classes.__path__ = []
 
 def load_result_files(db_folder="database"):
@@ -22,7 +54,6 @@ def load_result_files(db_folder="database"):
         for file_name in os.listdir(db_folder):
             file_path = os.path.join(db_folder, file_name)
             try:
-                # Use errors="replace" to handle decoding issues.
                 with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                     result_files[file_name] = f.read()
             except Exception as e:
