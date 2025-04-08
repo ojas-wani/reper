@@ -129,18 +129,18 @@ def main():
             placeholder="Enter your research topic or question",
             help="This is the main topic you want to research. Be specific for better results."
         )
-        # open_ai_key = st.text_input(
-        #     "OpenAI API Key (Optional)",
-        #     type="password",
-        #     placeholder="Your OpenAI API Key",
-        #     help="Enter your OpenAI API key for enhanced analysis capabilities."
-        # )
-        # base_url = st.text_input(
-        #     "Base URL (Optional)",
-        #     value="",
-        #     placeholder="Base URL for API",
-        #     help="Custom API endpoint if you're using a different OpenAI-compatible service."
-        # )
+        open_ai_key = st.text_input(
+            "OpenAI API Key (Optional)",
+            type="password",
+            placeholder="Your OpenAI API Key",
+            help="Enter your OpenAI API key for enhanced analysis capabilities."
+        )
+        base_url = st.text_input(
+            "Base URL (Optional)",
+            value="",
+            placeholder="Base URL for API",
+            help="Custom API endpoint if you're using a different OpenAI-compatible service."
+        )
 
         max_value = st.number_input(
             "Max Papers",
