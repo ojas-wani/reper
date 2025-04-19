@@ -48,6 +48,7 @@ except Exception as e:
 # Initialize torch
 torch.classes.__path__ = []
 
+
 def load_result_files(db_folder="database"):
     result_files = {}
     if os.path.exists(db_folder):
@@ -59,6 +60,7 @@ def load_result_files(db_folder="database"):
             except Exception as e:
                 st.error(f"Error reading {file_name}: {e}")
     return result_files
+
 
 def main():
     # Initialize session state for result files and results_generated flag if not already present.
@@ -199,7 +201,8 @@ def main():
                     base_url=base_url
                 )
             if literature_data is None:
-                st.error("Literature review failed. Please check the logs for errors.")
+                st.error(
+                    "Literature review failed. Please check the logs for errors.")
                 return
             st.success("Literature review completed!")
 
@@ -250,7 +253,8 @@ def main():
                         mime=mime
                     )
             else:
-                st.info("No result files available. Please run the workflow to generate files.")
+                st.info(
+                    "No result files available. Please run the workflow to generate files.")
 
             st.markdown("## Papers Information")
 
@@ -267,7 +271,7 @@ def main():
                             for paper in papers:
                                 if total_papers >= max_value:
                                     break
-                                
+
                                 st.markdown(f"""
                                     <div class='paper-card'>
                                         <h4 style='color: #2c3e50; margin-bottom: 10px;'>{paper.get('title', 'N/A')}</h4>
@@ -283,6 +287,7 @@ def main():
                 st.warning("No papers info found in literature_data.json.")
         else:
             st.info("Results will be displayed here once the workflow is complete.")
+
 
 if __name__ == "__main__":
     main()

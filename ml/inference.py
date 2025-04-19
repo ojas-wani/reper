@@ -13,6 +13,9 @@ def query_model(model_str, system_prompt, prompt, temp, openai_api_key=None, bas
         base_url=base_url if base_url else "https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 
+    print("OpenAI API Key:", openai_api_key)
+    print("Base URL:", base_url)
+
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": prompt}
